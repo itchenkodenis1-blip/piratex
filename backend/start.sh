@@ -1,6 +1,19 @@
 #!/bin/bash
 set -e
 
+# Debug: check Railway env vars
+echo "DEBUG: JWT_SECRET=$(if [ -n \"$JWT_SECRET\" ]; then echo 'SET'; else echo 'EMPTY'; fi)"
+echo "DEBUG: DATABASE_URL=$(if [ -n \"$DATABASE_URL\" ]; then echo 'SET'; else echo 'EMPTY'; fi)"
+echo "DEBUG: REDIS_URL=$(if [ -n \"$REDIS_URL\" ]; then echo 'SET'; else echo 'EMPTY'; fi)"
+echo "DEBUG: PORT=$PORT"
+
+# Fallback: generate JWT_SECRET if Railway didn't pass it
+if [ -z "$JWT_SECRET" ]; then
+  JWT_SECRET=$(openssl rand -hex 32)
+  export JWT_SECRET
+  echo "WARNING: JWT_SECRET not set by Railway — generated temporary key"
+fi
+
 # Initialize alembic version tracking if the DB was set up before alembic.
 # Base.metadata.create_all() creates tables automatically, so alembic needs
 # to know which migrations are already reflected in the schema.
