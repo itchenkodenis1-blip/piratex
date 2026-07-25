@@ -11,7 +11,7 @@ from app.database import engine
 from app.database import Base
 import app.models  # noqa: F401 — register all ORM models with Base.metadata
 
-KNOWN_BASELINE = '015_add_content_moderation_fields'
+KNOWN_BASELINE = '015'
 
 async def init():
     async with engine.begin() as conn:
@@ -29,14 +29,15 @@ async def init():
         else:
             r2 = await conn.execute(text('SELECT version_num FROM alembic_version'))
             row = r2.first()
-            if not row:
-                await conn.execute(text(f"INSERT INTO alembic_version VALUES ('{KNOWN_BASELINE}')"))
-                print(f'Stamped empty alembic_version to {KNOWN_BASELINE}')
-            elif row[0].startswith('00') and row[0] < KNOWN_BASELINE:
-                await conn.execute(text(f"UPDATE alembic_version SET version_num = '{KNOWN_BASELINE}'"))
-                print(f'Updated alembic_version from {row[0]} to {KNOWN_BASELINE}')
-            else:
+            if row and row[0] == KNOWN_BASELINE:
                 print(f'Alembic version: {row[0]}')
+            else:
+                old = row[0] if row else '(none)'
+                if not row:
+                    await conn.execute(text(f"INSERT INTO alembic_version VALUES ('{KNOWN_BASELINE}')"))
+                else:
+                    await conn.execute(text(f"UPDATE alembic_version SET version_num = '{KNOWN_BASELINE}'"))
+                print(f'Stamped alembic_version from {old} to {KNOWN_BASELINE}')
     await engine.dispose()
 
 asyncio.run(init())
