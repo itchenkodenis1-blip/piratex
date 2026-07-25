@@ -149,7 +149,13 @@ class Settings(BaseSettings):
     admin_emails: str = ""  # Comma-separated list of admin emails
     admin_telegram_ids: str = ""  # Comma-separated Telegram user IDs
 
-    model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
+    model_config = {
+        "env_file": ".env",
+        "env_file_encoding": "utf-8",
+        "env_prefix": "",
+        "case_sensitive": False,
+        "extra": "ignore",
+    }
 
 
 settings = Settings()
