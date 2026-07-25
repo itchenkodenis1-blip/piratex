@@ -11,7 +11,7 @@ from app.database import engine
 from app.database import Base
 import app.models  # noqa: F401 — register all ORM models with Base.metadata
 
-KNOWN_BASELINE = '006_add_thumbnail_key'
+KNOWN_BASELINE = '015_add_content_moderation_fields'
 
 async def init():
     async with engine.begin() as conn:
