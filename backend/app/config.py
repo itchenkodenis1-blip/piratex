@@ -1,18 +1,22 @@
-from pydantic_settings import BaseSettings
+import os
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        env_prefix="",
+        case_sensitive=False,
+        extra="ignore",
+    )
+
     app_name: str = "Piratex.ai"
     debug: bool = False
     storage_dir: str = "./storage"
-
-    # Demo mode: when on, admin analytics dashboards show a synthetic, in-memory
-    # financial picture (≈500 000 ₽/мес) instead of real numbers. Nothing is
-    # written to the DB; real payment logic is untouched. Default fallback when
-    # no runtime Redis override is set (see services/demo_data.is_demo_mode).
     demo_mode: bool = False
 
-    # Database (must be set via DATABASE_URL env var)
+    # Database
     database_url: str = ""
 
     @property
@@ -24,22 +28,19 @@ class Settings(BaseSettings):
             url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
         return url
 
-    # OpenRouter (primary provider for all chat/vision completions)
+    # OpenRouter
     openrouter_api_key: str = ""
     openrouter_base_url: str = "https://openrouter.ai/api/v1"
-
-    # OpenAI (legacy — only used if openrouter_api_key is empty)
     openai_api_key: str = ""
 
-    # Whisper transcription (separate provider — OpenRouter doesn't support audio)
-    # Supports Groq (free whisper-large-v3-turbo) or any OpenAI-compatible audio API
-    whisper_api_key: str = ""  # defaults to openrouter_api_key if empty
+    # Whisper
+    whisper_api_key: str = ""
     whisper_base_url: str = "https://api.groq.com/openai/v1"
 
-    # Anthropic (for script & strategy generation via Claude)
+    # Anthropic
     anthropic_api_key: str = ""
 
-    # Apify — all scraping goes through Apify actors
+    # Apify
     apify_api_token: str = ""
     apify_timeout: int = 300
     apify_instagram_actor: str = "apify~instagram-reel-scraper"
@@ -50,16 +51,14 @@ class Settings(BaseSettings):
     apify_youtube_comments_actor: str = "streamers~youtube-comments-scraper"
     apify_tiktok_comments_actor: str = "clockworks~tiktok-comments-scraper"
     apify_instagram_profile_actor: str = "apify~instagram-profile-scraper"
+    apify_balance_min_pct: float = 5.0
+    apify_balance_alert_pct: float = 20.0
+    apify_balance_check_interval: int = 300
 
-    # Apify budget protection (percentage of monthly limit)
-    apify_balance_min_pct: float = 5.0       # pause all calls if remaining < 5% of monthly limit
-    apify_balance_alert_pct: float = 20.0    # send Telegram alert when remaining < 20% of monthly limit
-    apify_balance_check_interval: int = 300  # seconds between balance checks
-
-    # Auth (JWT_SECRET env var is required — app will not start without it)
-    jwt_secret: str
+    # Auth
+    jwt_secret: str = os.environ.get("JWT_SECRET", "")
     jwt_algorithm: str = "HS256"
-    jwt_expire_minutes: int = 10080  # 7 days
+    jwt_expire_minutes: int = 10080
 
     # CORS
     cors_origins: str = "http://localhost:5173"
@@ -148,14 +147,6 @@ class Settings(BaseSettings):
     # Admin
     admin_emails: str = ""  # Comma-separated list of admin emails
     admin_telegram_ids: str = ""  # Comma-separated Telegram user IDs
-
-    model_config = {
-        "env_file": ".env",
-        "env_file_encoding": "utf-8",
-        "env_prefix": "",
-        "case_sensitive": False,
-        "extra": "ignore",
-    }
 
 
 settings = Settings()
