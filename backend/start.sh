@@ -9,12 +9,18 @@ import asyncio
 from sqlalchemy import text
 from app.database import engine
 
+from app.database import Base
+
 KNOWN_BASELINE = '006_add_thumbnail_key'
 
 async def init():
     async with engine.begin() as conn:
+        # Create all ORM tables first (required before alembic migrations)
+        await conn.run_sync(Base.metadata.create_all)
+        print('Base.metadata.create_all() done')
+
         r = await conn.execute(text(
-            \"SELECT EXISTS(SELECT FROM information_schema.tables WHERE table_name='alembic_version')\"
+            "SELECT EXISTS(SELECT FROM information_schema.tables WHERE table_name='alembic_version')"
         ))
         if not r.scalar():
             await conn.execute(text('CREATE TABLE alembic_version (version_num VARCHAR(32) NOT NULL)'))
