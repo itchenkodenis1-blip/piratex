@@ -17,14 +17,25 @@ class Settings(BaseSettings):
     demo_mode: bool = False
 
     # Database
-    database_url: str = ""
+    database_url: str = os.environ.get("DATABASE_URL", "")
 
     @property
     def effective_database_url(self) -> str:
         url = self.database_url
+        # Auto-detect Railway Postgres from individual env vars if DATABASE_URL is empty
+        if not url:
+            pg_host = os.environ.get("PGHOST") or os.environ.get("PGHOSTADDR")
+            pg_port = os.environ.get("PGPORT", "5432")
+            pg_user = os.environ.get("PGUSER", "postgres")
+            pg_pass = os.environ.get("PGPASSWORD", "")
+            pg_db = os.environ.get("PGDATABASE", "postgres")
+            if pg_host:
+                url = f"postgresql+asyncpg://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}"
+                self.database_url = url
+                return url
         if url.startswith("postgres://"):
             url = url.replace("postgres://", "postgresql+asyncpg://", 1)
-        elif url.startswith("postgresql://"):
+        elif url.startswith("postgresql://") and "+asyncpg" not in url:
             url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
         return url
 
