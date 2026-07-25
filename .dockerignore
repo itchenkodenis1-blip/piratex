@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Runtime data (root-level only, keep backend/app/storage/ module)
+/storage/
+!backend/app/storage/
+*.db
+*.sqlite3
+
+# Environment
+.env
+*.env.local
+backend/.env
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Plans & docs
+planes/
+.claude/

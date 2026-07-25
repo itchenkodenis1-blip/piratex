@@ -1,0 +1,14 @@
+# Scheduler-only image: runs background loops (billing, watchdog, trends, etc.)
+# No frontend build, no ffmpeg needed — lightweight.
+FROM python:3.13-slim-bookworm
+
+WORKDIR /app
+
+# Install Python dependencies
+COPY backend/requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy backend code
+COPY backend/ ./
+
+CMD ["python", "run_scheduler.py"]

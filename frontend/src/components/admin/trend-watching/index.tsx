@@ -1,0 +1,1 @@
+export { AdminTrendWatching } from "./AdminTrendWatching";

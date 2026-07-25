@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment — never commit real secrets. Only *.env.example is allowed.
+.env
+.env.*
+*.env
+!.env.example
+!**/.env.example
+
+# Storage (runtime data — videos, audio, frames)
+/storage/
+backend/storage/
+/data/
+
+# Database
+*.db
+*.sqlite3
+
+# Node
+node_modules/
+node_modules.nosync/
+frontend/dist/
+frontend/dist.nosync/
+frontend/.vite/
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Claude Code / local agent state (do not publish)
+.claude/
+.claude.nosync/
+.mcp.json

@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --color-cream: #EBEBEB;
+  --color-cream-dim: #A3A3A3;
+  --color-cream-muted: #737373;
+  --color-surface: #161616;
+  --color-surface-light: #1E1E1E;
+  --color-border-subtle: #2A2A2A;
+}
+
+/* Убрать синюю вспышку при тапе на iOS */
+* { -webkit-tap-highlight-color: transparent; }
+
+/* Утилита скрытия скроллбара */
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* Safe area */
+:root {
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #0C0C0C;
+  color: var(--color-cream);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Scan line effect for frame cards awaiting analysis */
+@keyframes scanLine {
+  0%, 100% {
+    top: 0%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  50% {
+    top: 100%;
+  }
+}
+
+/* Text reveal animation for analysis results */
+@keyframes textReveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Magical pipeline stepper animations ─── */
+
+@keyframes stepperBreathe {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.5; }
+}
+
+@keyframes stepperOrbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes stepperShimmer {
+  0% { transform: translateX(-150%); }
+  100% { transform: translateX(250%); }
+}
+
+@keyframes stepperCheckBounce {
+  0% { transform: scale(0) rotate(-15deg); opacity: 0; }
+  50% { transform: scale(1.25) rotate(5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+@keyframes stepperSparkle {
+  0% { transform: translateY(0) scale(0); opacity: 0; }
+  12% { transform: translateY(-6px) scale(1); opacity: 0.9; }
+  100% { transform: translateY(-40px) scale(0); opacity: 0; }
+}
+
+@keyframes stepperTipPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+  50% { transform: translate(-50%, -50%) scale(1.8); opacity: 0.3; }
+}
+
+@keyframes scaleIn {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+.shake { animation: shake 0.4s ease-in-out; }
+
+/* ─── Showcase Dashboard ─── */
+
+.showcase-page {
+  animation: showcaseFadeIn 0.8s ease-out;
+}
+
+@keyframes showcaseFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.showcase-hero-number {
+  animation: showcaseNumberReveal 1.2s ease-out;
+  filter: drop-shadow(0 0 40px rgba(167, 139, 250, 0.15));
+}
+
+@keyframes showcaseNumberReveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.showcase-card {
+  animation: showcaseCardSlide 0.6s ease-out backwards;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.showcase-card:nth-child(1) { animation-delay: 0.3s; }
+.showcase-card:nth-child(2) { animation-delay: 0.4s; }
+.showcase-card:nth-child(3) { animation-delay: 0.5s; }
+.showcase-card:nth-child(4) { animation-delay: 0.6s; }
+
+.showcase-card:hover {
+  border-color: rgba(167, 139, 250, 0.2);
+  box-shadow: 0 0 30px rgba(167, 139, 250, 0.05);
+}
+
+@keyframes showcaseCardSlide {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
