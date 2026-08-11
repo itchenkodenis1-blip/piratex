@@ -163,7 +163,7 @@ class Settings(BaseSettings):
 settings = Settings()
 
 TIER_LIMITS = {
-    "ANONYMOUS": {"max_total": 1},
+    "ANONYMOUS": {"max_total": 100_000},
     "REGISTERED": {"max_monthly": 0},
     "FREE": {"max_monthly": 3, "max_refines_daily": 5},
     "START": {"max_monthly": 50, "max_refines_daily": 30},

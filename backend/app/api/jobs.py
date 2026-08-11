@@ -28,7 +28,7 @@ router = APIRouter()
 
 
 _TIER_RATE_LIMITS = {
-    "ANONYMOUS": 2,
+    "ANONYMOUS": 30,
     "FREE": 5,
     "START": 10,
     "PRO": 15,
@@ -509,36 +509,6 @@ async def get_job(
             )
         )
         my_rating = rating_result.scalar_one_or_none()
-
-    # Anonymous users get truncated teaser results
-    if user.is_anonymous and job.status == JobStatus.COMPLETED:
-        teaser = build_teaser_result(job)
-        return JobResultResponse(
-            job_id=job.id,
-            url=job.url,
-            status=job.status,
-            progress=job.progress,
-            video_title=job.video_title,
-            video_duration=job.video_duration,
-            video_platform=job.video_platform,
-            video_author=job.video_author,
-            video_description=job.video_description,
-            video_views=job.video_views,
-            video_likes=job.video_likes,
-            video_comments=job.video_comments,
-            transcript=teaser["transcript"],
-            frames=teaser["frames"],
-            adaptation_summary=teaser["adaptation_summary"],
-            is_teaser=True,
-            teaser_limits=teaser["teaser_limits"],
-            share_token=job.share_token,
-            library_reel_id=job.library_reel_id,
-            user_script_id=script_id,
-            production_status=prod_status,
-            created_at=job.created_at,
-            completed_at=job.completed_at,
-            error=get_user_friendly_error(job.error) if job.error else None,
-        )
 
     return JobResultResponse(
         job_id=job.id,

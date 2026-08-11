@@ -608,13 +608,14 @@ async def _run_migrations():
         await _safe_exec("seed tier_configs", """
             INSERT INTO tier_configs (name, max_monthly, max_total)
             VALUES
-                ('ANONYMOUS', NULL, 1),
+                ('ANONYMOUS', NULL, 100000),
                 ('REGISTERED', 0, NULL),
                 ('FREE', 3, NULL),
                 ('START', 50, NULL),
                 ('PRO', 150, NULL),
                 ('UNLIMITED', 500, NULL)
-            ON CONFLICT (name) DO NOTHING
+            ON CONFLICT (name) DO UPDATE SET max_total = EXCLUDED.max_total
+            WHERE tier_configs.name = 'ANONYMOUS'
         """)
 
         # Add max_refines_daily column to tier_configs

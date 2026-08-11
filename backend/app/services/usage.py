@@ -118,12 +118,11 @@ async def check_can_create_analysis(
         all_jobs = all_jobs_result.scalar() or 0
         # Hard cap: anonymous users can't create more than 5 jobs total
         # (even failed ones) to prevent unlimited scanning
-        if all_jobs >= 5:
+        if all_jobs >= 100_000:
             logger.warning(
                 "ANON_HARD_CAP user=%s total_jobs=%d", user.id, all_jobs,
             )
             return False, all_jobs, max_total, "anonymous_limit"
-
         # Soft limit: count non-failed for the actual analysis limit
         result = await db.execute(
             select(func.count()).select_from(Job).where(
