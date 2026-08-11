@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { getMe } from "../api/client";
 import type {
   AdaptationSummary,
   FrameAnalysis,
@@ -42,6 +43,7 @@ export function useJobWebSocket(jobId: string | null) {
   const reconnectAttempts = useRef(0);
   const reconnectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const progressRef = useRef<ProgressUpdate | null>(null);
+  const reauthAttempts = useRef(0);
 
   const disconnect = useCallback(() => {
     if (reconnectTimer.current) {
@@ -96,6 +98,7 @@ export function useJobWebSocket(jobId: string | null) {
 
       ws.onopen = () => {
         reconnectAttempts.current = 0;
+        reauthAttempts.current = 0;
       };
 
       ws.onmessage = (event) => {
@@ -172,8 +175,26 @@ export function useJobWebSocket(jobId: string | null) {
       ws.onclose = (event) => {
         wsRef.current = null;
 
-        // Don't reconnect on auth errors — token won't change between attempts
-        if (event.code === 4001 || event.code === 4003) return;
+        // Auth errors: token may be stale (e.g. server restarted and re-generated
+        // JWT_SECRET, or the old token simply expired). Anonymous users can always
+        // get a fresh token from getMe, so re-auth a few times before giving up.
+        if (event.code === 4001 || event.code === 4003) {
+          if (reauthAttempts.current >= 2) return;
+          reauthAttempts.current += 1;
+          reconnectTimer.current = setTimeout(async () => {
+            try {
+              const res = await getMe();
+              if (res.token) {
+                localStorage.setItem("token", res.token);
+                window.dispatchEvent(new Event("piratex:token-ready"));
+              }
+            } catch {
+              // getMe failed — leave token as-is; connect() will retry auth or wait
+            }
+            connect();
+          }, 800);
+          return;
+        }
 
         // Don't reconnect if job is already completed or failed
         const status = progressRef.current;
