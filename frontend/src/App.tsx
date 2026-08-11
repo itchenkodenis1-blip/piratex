@@ -41,25 +41,6 @@ function LoadingFallback() {
   );
 }
 
-interface AuthRequiredPageProps {
-  onLoginClick: () => void;
-}
-
-function AuthRequiredPage({ onLoginClick }: AuthRequiredPageProps) {
-  const { t } = useTranslation();
-  return (
-    <div className="text-center py-20 space-y-4">
-      <p className="text-zinc-400 text-lg">{t.auth_required_page}</p>
-      <button
-        onClick={onLoginClick}
-        className="px-6 py-2.5 bg-cream text-[#0C0C0C] hover:bg-cream-dim font-medium rounded-full text-sm transition-colors"
-      >
-        {t.auth_required_login_btn}
-      </button>
-    </div>
-  );
-}
-
 function App() {
   const { user, usage, loading: authLoading, logout, refreshUser } = useAuth();
   const { t, setLang } = useTranslation();
@@ -214,8 +195,6 @@ function App() {
     );
   }
 
-  const isAnonymous = !user || user.is_anonymous;
-
   return (
     <>
       <YandexMetrika />
@@ -248,7 +227,7 @@ function App() {
           />
           <Route
             path="/my-videos"
-            element={isAnonymous ? <AuthRequiredPage onLoginClick={handleLoginClick} /> : <MyVideosPage />}
+            element={<MyVideosPage />}
           />
           <Route
             path="/pipeline"
@@ -273,7 +252,7 @@ function App() {
           />
           <Route
             path="/settings"
-            element={isAnonymous ? <AuthRequiredPage onLoginClick={handleLoginClick} /> : <SettingsPage />}
+            element={<SettingsPage />}
           />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/terms-ru" element={<TermsPage />} />

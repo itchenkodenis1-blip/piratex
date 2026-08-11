@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.auth import get_current_user
+from app.core.anonymous import ensure_user
 from app.database import get_db
 from app.models.library import UserReelLike
 from app.models.user import User
@@ -14,7 +14,7 @@ likes_router = APIRouter()
 @likes_router.get("", response_model=LikedUrlsResponse)
 async def get_liked_urls(
     db: AsyncSession = Depends(get_db),
-    user: User = Depends(get_current_user),
+    user: User = Depends(ensure_user),
 ):
     """Return all URLs liked by the current user."""
     result = await db.execute(
@@ -30,7 +30,7 @@ async def get_liked_urls(
 async def like_reel(
     body: LikeRequest,
     db: AsyncSession = Depends(get_db),
-    user: User = Depends(get_current_user),
+    user: User = Depends(ensure_user),
 ):
     """Like a reel by URL. Idempotent."""
     existing = await db.execute(
@@ -76,7 +76,7 @@ async def like_reel(
 async def unlike_reel(
     body: LikeRequest,
     db: AsyncSession = Depends(get_db),
-    user: User = Depends(get_current_user),
+    user: User = Depends(ensure_user),
 ):
     """Remove like from a reel by URL."""
     await db.execute(

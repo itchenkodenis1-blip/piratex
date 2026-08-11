@@ -6,7 +6,8 @@ from fastapi.responses import FileResponse, RedirectResponse, Response
 from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.auth import get_admin_user, get_current_user, get_optional_user
+from app.core.anonymous import ensure_user
+from app.core.auth import get_admin_user, get_optional_user
 from app.core.rate_limit import limiter
 from app.database import get_db
 from app.models.trends import ProfileReel, TrackedProfile, UserTrackedProfile
@@ -500,7 +501,7 @@ async def _list_for_you(
 async def get_for_you(
     request: Request,
     db: AsyncSession = Depends(get_db),
-    user: User = Depends(get_current_user),
+    user: User = Depends(ensure_user),
 ):
     """Deprecated: use GET /trends?tab=for_you instead.
 
@@ -621,7 +622,7 @@ async def get_for_you(
 
 @trends_router.get("/authors", response_model=MyAuthorsResponse)
 async def list_my_authors(
-    user: User = Depends(get_current_user),
+    user: User = Depends(ensure_user),
     db: AsyncSession = Depends(get_db),
 ):
     """List authors tracked by current user with limit info."""
@@ -668,7 +669,7 @@ async def list_my_authors(
 async def add_my_author(
     payload: AddAuthorRequest,
     request: Request,
-    user: User = Depends(get_current_user),
+    user: User = Depends(ensure_user),
     db: AsyncSession = Depends(get_db),
 ):
     """Add an author to track. Validates via Apify (may take 10-30s)."""
@@ -702,7 +703,7 @@ async def add_my_author(
 @trends_router.delete("/authors/{profile_id}")
 async def remove_my_author(
     profile_id: str,
-    user: User = Depends(get_current_user),
+    user: User = Depends(ensure_user),
     db: AsyncSession = Depends(get_db),
 ):
     """Remove an author from tracking."""

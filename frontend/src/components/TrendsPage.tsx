@@ -32,8 +32,8 @@ export function TrendsPage({ user, onLoginClick, onOpenOnboarding }: TrendsPageP
   const [searchParams, setSearchParams] = useSearchParams();
   const { isLiked, toggleLike } = useLikes();
 
-  const isAuthenticated = !!user && !user.is_anonymous;
-  const isPaidTier = isAuthenticated && !["FREE", "REGISTERED"].includes(user!.tier);
+  const isAuthenticated = true;
+  const isPaidTier = true;
 
   // Smart default tab: authenticated → for_you, anonymous → global
   const defaultTab = isAuthenticated ? "for_you" : "global";
