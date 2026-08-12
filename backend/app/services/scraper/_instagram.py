@@ -84,15 +84,15 @@ async def _ytdlp_instagram_metadata(url: str) -> dict:
                     continue
                 vcodec = f.get("vcodec") or ""
                 acodec = f.get("acodec") or ""
-                url = f.get("url") or ""
-                if not url:
+                f_url = f.get("url") or ""
+                if not f_url:
                     continue
                 if vcodec != "none" and acodec not in ("none", None):
                     # self-contained mp4 with audio — prefer it
                     if video_url != "" and not best_video:
                         best_video = f
                     if not video_url:
-                        video_url = url
+                        video_url = f_url
                 elif vcodec != "none" and not best_video:
                     best_video = f
                 elif acodec != "none" and not best_audio:
