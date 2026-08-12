@@ -492,7 +492,8 @@ async def refine_field(
     """Stream a refined version of a content field via SSE."""
     # --- Tier-based rate check (coarse; slowapi covers burst) ---
     tier = (user.tier or "FREE").upper()
-    if tier in ("ANONYMOUS", "REGISTERED"):
+    # ANONYMOUS allowed in single-user mode
+    if tier == "REGISTERED":
         raise HTTPException(
             status_code=403,
             detail="Upgrade to a paid plan to use AI refinement",
