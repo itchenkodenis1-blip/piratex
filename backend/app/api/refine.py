@@ -13,7 +13,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
-from app.core.auth import get_current_user
+from app.core.auth import get_optional_user
 from app.core.rate_limit import limiter
 from app.database import get_db
 from app.models.job import Job, JobStatus
@@ -486,8 +486,8 @@ async def refine_field(
     job_id: str,
     body: RefineRequest,
     request: Request,
-    user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_optional_user),
 ):
     """Stream a refined version of a content field via SSE."""
     # --- Tier-based rate check (coarse; slowapi covers burst) ---
