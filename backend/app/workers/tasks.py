@@ -415,11 +415,14 @@ async def task_scrape_and_download(
 
         try:
             await _update_job(db, job, JobStatus.DOWNLOADING, 0.05, "Скачиваем видео...")
+            logger.info("T1_META_START job=%s", job_id)
 
             # Start comment extraction in background
             comments_task = asyncio.create_task(scrape_comments(url))
+            logger.info("T1_COMMENTS_TASK_CREATED job=%s", job_id)
 
             video_path, metadata = await scrape_video(url, job_id=job_id)
+            logger.info("T1_SCRAPE_DONE job=%s path=%s", job_id, video_path)
 
             # Check duration limit
             duration = metadata.get("duration", 0) or 0
@@ -451,18 +454,22 @@ async def task_scrape_and_download(
                 "comments": job.video_comments,
                 "thumbnail": metadata.get("thumbnail"),
             })
+            logger.info("T1_METADATA_SAVED job=%s", job_id)
 
             # Collect comments (graceful — empty list if not available)
             try:
                 comments = await comments_task
+                logger.info("T1_COMMENTS_GOT job=%s n=%d", job_id, len(comments))
             except Exception:
                 comments = []
+                logger.warning("T1_COMMENTS_FAIL job=%s", job_id)
 
             # Save partial costs (apify) to DB
             job.cost_breakdown = tracker.to_dict()
             await db.commit()
 
             # Enqueue next task
+            logger.info("T1_ENQUEUE_START job=%s", job_id)
             await redis.enqueue_job(
                 "task_extract_and_analyze",
                 job_id,
@@ -473,6 +480,7 @@ async def task_scrape_and_download(
                 profile_json,
                 comments,
             )
+            logger.info("T1_ENQUEUE_DONE job=%s", job_id)
 
         except asyncio.CancelledError:
             await heartbeat.stop()
