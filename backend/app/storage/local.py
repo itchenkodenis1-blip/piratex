@@ -31,7 +31,7 @@ class LocalStorage(StorageBackend):
     async def write_from_path(self, key: str, local_path: Path) -> str:
         dest = self._safe_path(key)
         dest.parent.mkdir(parents=True, exist_ok=True)
-        if local_path != dest:
+        if local_path.resolve() != dest.resolve():
             shutil.copy2(str(local_path), str(dest))
         return key
 
@@ -96,7 +96,7 @@ class LocalStorage(StorageBackend):
     async def download_to_path(self, key: str, local_path: Path) -> None:
         """Copy file from local storage to another local path."""
         src = self._safe_path(key)
-        if src != local_path:
+        if src.resolve() != local_path.resolve():
             local_path.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(str(src), str(local_path))
 
