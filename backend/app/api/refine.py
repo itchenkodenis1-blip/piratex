@@ -5,7 +5,6 @@ import logging
 from html import escape as html_escape
 from typing import AsyncGenerator, Literal
 
-from anthropic import AsyncAnthropic, AuthenticationError, RateLimitError
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field, model_validator
@@ -14,6 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.core.auth import get_optional_user
+from app.core.openai_client import get_openai_client
 from app.core.rate_limit import limiter
 from app.database import get_db
 from app.models.job import Job, JobStatus
@@ -377,7 +377,6 @@ LANGUAGE_NAMES = {
 
 async def _stream_refine(
     request: Request,
-    client: AsyncAnthropic,
     field: FieldName,
     current_text: str,
     instruction: str,
@@ -385,7 +384,7 @@ async def _stream_refine(
     profile_context: str,
     user_id: str | None = None,
 ) -> AsyncGenerator[str, None]:
-    """Stream refined text from Claude, yielding SSE events."""
+    """Stream refined text from OpenRouter (Claude/GPT), yielding SSE events."""
     lang_name = LANGUAGE_NAMES.get(target_language, "Russian")
 
     system_prompt = REFINE_PROMPTS[field].format(
@@ -407,65 +406,77 @@ async def _stream_refine(
         f"Инструкция: {instruction}"
     )
 
+    openai_client = get_openai_client()
+
     try:
-        async with client.messages.stream(
+        stream = await openai_client.chat.completions.create(
             model=settings.light_text_model,
-            system=[{
-                "type": "text",
-                "text": system_prompt,
-                "cache_control": {"type": "ephemeral"},
-            }],
-            messages=[{"role": "user", "content": user_message}],
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_message},
+            ],
             max_tokens=4096,
             timeout=60.0,
-        ) as stream:
-            usage_counted = False
-            async for text in stream.text_stream:
-                if await request.is_disconnected():
-                    return
-                # Count usage on first successful chunk
+            stream=True,
+        )
+        usage_counted = False
+        async for chunk in stream:
+            if await request.is_disconnected():
+                return
+            delta = chunk.choices[0].delta if chunk.choices else None
+            if delta and delta.content:
                 if not usage_counted and user_id:
                     try:
                         await increment_refine_usage(user_id)
                     except Exception:
                         logger.warning("Failed to increment refine usage for %s", user_id)
                     usage_counted = True
-                yield f"data: {json.dumps({'t': text})}\n\n"
+                yield f"data: {json.dumps({'t': delta.content})}\n\n"
 
         yield f"data: {json.dumps({'done': True})}\n\n"
 
-    except AuthenticationError:
-        yield f"data: {json.dumps({'error': 'Invalid API key.'})}\n\n"
-        return
-    except (RateLimitError, Exception) as e:
-        logger.warning("Refine Claude failed (%s), falling back to GPT-5.4", type(e).__name__)
-        # ── Fallback to GPT-5.4 streaming ──
+    except Exception as e:
+        logger.warning("Refine OpenRouter failed (%s), falling back to direct Anthropic if available", type(e).__name__)
+        # Fallback to direct Anthropic if user has their own key
         try:
-            from app.core.openai_client import get_openai_client
+            from anthropic import AsyncAnthropic, AuthenticationError, RateLimitError
 
-            openai_client = get_openai_client()
-            openai_stream = await openai_client.chat.completions.create(
-                model=settings.fallback_text_model,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_message},
-                ],
-                max_completion_tokens=4096,
-                stream=True,
+            anthropic_key = (
+                settings.anthropic_api_key
+                # Note: user's personal key not available here without db lookup
             )
-            usage_counted = False
-            async for chunk in openai_stream:
-                if await request.is_disconnected():
-                    return
-                delta = chunk.choices[0].delta if chunk.choices else None
-                if delta and delta.content:
+            if not anthropic_key:
+                raise RuntimeError("No Anthropic fallback key")
+
+            client = AsyncAnthropic(api_key=anthropic_key)
+            async with client.messages.stream(
+                model=settings.light_text_model,
+                system=[{
+                    "type": "text",
+                    "text": system_prompt,
+                    "cache_control": {"type": "ephemeral"},
+                }],
+                messages=[{"role": "user", "content": user_message}],
+                max_tokens=4096,
+                timeout=60.0,
+            ) as stream:
+                usage_counted = False
+                async for text in stream.text_stream:
+                    if await request.is_disconnected():
+                        return
                     if not usage_counted and user_id:
                         try:
                             await increment_refine_usage(user_id)
                         except Exception:
                             logger.warning("Failed to increment refine usage for %s", user_id)
                         usage_counted = True
-                    yield f"data: {json.dumps({'t': delta.content})}\n\n"
+                    yield f"data: {json.dumps({'t': text})}\n\n"
+
+            yield f"data: {json.dumps({'done': True})}\n\n"
+
+        except (AuthenticationError, RateLimitError, Exception):
+            logger.error("Refine fallback also failed")
+            yield f"data: {json.dumps({'error': 'Refinement failed. Please try again.'})}\n\n"
 
             yield f"data: {json.dumps({'done': True})}\n\n"
             logger.info("Refine GPT-5.4 fallback succeeded")
@@ -542,13 +553,8 @@ async def refine_field(
     )
     user_settings = settings_result.scalar_one_or_none()
 
-    anthropic_key = (
-        (user_settings.anthropic_api_key if user_settings else None)
-        or settings.anthropic_api_key
-    )
-    if not anthropic_key:
-        raise HTTPException(status_code=400, detail="API key not configured")
-
+    # OpenRouter client is created inside _stream_refine (get_openai_client)
+    # No per-user Anthropic key needed — uses shared OpenRouter API key
     language = (
         user_settings.language
         if user_settings and user_settings.language
@@ -586,12 +592,9 @@ async def refine_field(
     else:
         instruction = body.instruction
 
-    client = AsyncAnthropic(api_key=anthropic_key)
-
     return StreamingResponse(
         _stream_refine(
             request=request,
-            client=client,
             field=body.field,
             current_text=body.current_text,
             instruction=instruction,
