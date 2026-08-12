@@ -1,6 +1,8 @@
 import asyncio
 import logging
+import tempfile
 from datetime import datetime, timedelta
+from pathlib import Path
 
 from app.config import settings
 from app.services.scraper._apify_client import _safe_domain, _summarise_item, run_actor
@@ -12,6 +14,99 @@ logger = logging.getLogger(__name__)
 _CACHE: dict[str, asyncio.Future[dict]] = {}
 _CACHE_TTL = timedelta(minutes=5)
 _CACHE_TIMES: dict[str, datetime] = {}
+
+
+def _instagram_cookies_file() -> Path | None:
+    """Write IG cookies (Netscape format) from env to a temp file for yt-dlp."""
+    netscape = settings.instagram_cookies_netscape
+    if not netscape:
+        return None
+    try:
+        tmp = tempfile.NamedTemporaryFile(
+            mode="w", suffix=".txt", prefix="ig_cookies_", delete=False
+        )
+        tmp.write(netscape)
+        tmp.close()
+        return Path(tmp.name)
+    except Exception as e:
+        logger.warning("Failed to write IG cookies file: %s", e)
+        return None
+
+
+async def _ytdlp_instagram_metadata(url: str) -> dict:
+    """Fetch reel metadata + direct video URL via yt-dlp with IG cookies.
+
+    Used as fallback when the Apify actor returns restricted_page without a
+    videoUrl (Instagram blocks anonymous scraping in 2026+).
+    """
+    import yt_dlp
+
+    cookies_file = _instagram_cookies_file()
+    opts: dict = {
+        "quiet": True,
+        "no_warnings": True,
+        "skip_download": True,
+        "socket_timeout": 60,
+        "noplaylist": True,
+    }
+    if cookies_file:
+        opts["cookiefile"] = str(cookies_file)
+
+    loop = asyncio.get_running_loop()
+
+    def _run():
+        with yt_dlp.YoutubeDL(opts) as ydl:
+            info = ydl.extract_info(url, download=False)
+            if not info:
+                return None
+            # Pick best mp4 format that has video (merge audio-only is done later
+            # by download_video_to_local when audio_url is present).
+            video_url = info.get("url") or ""
+            audio_url = None
+            formats = info.get("formats") or []
+            best_video = None
+            best_audio = None
+            for f in formats:
+                if f.get("protocol") in ("m3u8_native", "m3u8"):
+                    continue
+                vcodec = f.get("vcodec") or ""
+                acodec = f.get("acodec") or ""
+                url = f.get("url") or ""
+                if not url:
+                    continue
+                if vcodec != "none" and acodec not in ("none", None):
+                    # self-contained mp4 with audio — prefer it
+                    if video_url != "" and not best_video:
+                        best_video = f
+                    if not video_url:
+                        video_url = url
+                elif vcodec != "none" and not best_video:
+                    best_video = f
+                elif acodec != "none" and not best_audio:
+                    best_audio = f
+            if not video_url and best_video:
+                video_url = best_video["url"]
+            if best_audio:
+                audio_url = best_audio["url"]
+            return {
+                "video_url": video_url,
+                "audio_url": audio_url,
+                "title": info.get("title"),
+                "duration": info.get("duration"),
+                "uploader": info.get("uploader") or info.get("channel"),
+                "description": info.get("description"),
+                "view_count": info.get("view_count"),
+                "like_count": info.get("like_count"),
+                "comment_count": info.get("comment_count"),
+                "thumbnail": info.get("thumbnail"),
+            }
+
+    try:
+        return await loop.run_in_executor(None, _run)
+    finally:
+        if cookies_file:
+            cookies_file.unlink(missing_ok=True)
+
 
 
 async def _fetch_instagram(url: str) -> dict:
@@ -119,6 +214,33 @@ class InstagramScraper(PlatformScraper):
                 "[instagram] NO VIDEO URL url=%s item_summary=%s",
                 url, _summarise_item(item),
             )
+            # Fallback: Apify got restricted_page (no videoUrl). Try yt-dlp with
+            # IG cookies, which can still fetch the direct MP4.
+            logger.info("[instagram] yt-dlp fallback url=%s", url)
+            ytdlp = await _ytdlp_instagram_metadata(url)
+            if ytdlp and ytdlp.get("video_url"):
+                logger.info("[instagram] yt-dlp fallback OK url=%s", url)
+                result = ScrapeResult(
+                    video_url=ytdlp["video_url"],
+                    audio_url=ytdlp.get("audio_url"),
+                    title=ytdlp.get("title"),
+                    duration=ytdlp.get("duration"),
+                    platform="instagram",
+                    uploader=ytdlp.get("uploader"),
+                    description=ytdlp.get("description"),
+                    view_count=ytdlp.get("view_count"),
+                    like_count=ytdlp.get("like_count"),
+                    comment_count=ytdlp.get("comment_count"),
+                    thumbnail=ytdlp.get("thumbnail"),
+                )
+                logger.info(
+                    "[instagram] parsed (ytdlp) url=%s uploader=%s duration=%s "
+                    "views=%s likes=%s video_domain=%s",
+                    url, result.uploader, result.duration,
+                    result.view_count, result.like_count,
+                    _safe_domain(result.video_url),
+                )
+                return result
             from app.core.exceptions import DownloadError
             raise DownloadError(f"Instagram actor returned no video URL for {url}")
 

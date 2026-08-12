@@ -53,6 +53,9 @@ class Settings(BaseSettings):
 
     # Apify
     apify_api_token: str = ""
+    # Netscape-format cookies for Instagram (used by yt-dlp fallback when the
+    # Apify actor returns restricted_page / no videoUrl)
+    instagram_cookies_netscape: str = ""
     apify_timeout: int = 300
     apify_instagram_actor: str = "apify~instagram-reel-scraper"
     apify_youtube_actor: str = "dc_solutions~youtube-downloader-pro"
