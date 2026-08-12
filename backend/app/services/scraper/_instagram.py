@@ -1,4 +1,5 @@
 import asyncio
+import base64
 import logging
 import tempfile
 from datetime import datetime, timedelta
@@ -17,10 +18,22 @@ _CACHE_TIMES: dict[str, datetime] = {}
 
 
 def _instagram_cookies_file() -> Path | None:
-    """Write IG cookies (Netscape format) from env to a temp file for yt-dlp."""
-    netscape = settings.instagram_cookies_netscape
-    if not netscape:
+    """Write IG cookies to a temp file for yt-dlp.
+
+    Accepts either raw Netscape-format text or a single-line base64 blob
+    (base64 is easier to paste into a one-line Railway env var).
+    """
+    raw = settings.instagram_cookies_netscape
+    if not raw:
         return None
+    netscape = raw
+    if "instagram.com" not in raw and "# Netscape" not in raw:
+        try:
+            decoded = base64.b64decode(raw, validate=True).decode("utf-8")
+            if "# Netscape" in decoded or "instagram.com" in decoded:
+                netscape = decoded
+        except Exception as e:
+            logger.warning("IG cookies not Netscape and not base64: %s", e)
     try:
         tmp = tempfile.NamedTemporaryFile(
             mode="w", suffix=".txt", prefix="ig_cookies_", delete=False
