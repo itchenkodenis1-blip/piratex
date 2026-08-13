@@ -8,7 +8,7 @@ appropriate to their channel (HTTP JSON vs Telegram message).
 import hashlib
 import logging
 from dataclasses import dataclass
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing import Literal
 
 from sqlalchemy import select, text
@@ -21,6 +21,8 @@ from app.services.scraper._platform import normalize_url, validate_video_url
 from app.services.usage import check_can_create_analysis
 
 logger = logging.getLogger(__name__)
+
+PENDING_STALE_MINUTES = 10  # active job older than this is treated as a zombie
 
 Outcome = Literal[
     "created",
@@ -101,10 +103,25 @@ async def create_job_from_url(
     )
     active_job = active_result.scalar_one_or_none()
     if active_job:
-        return JobCreationResult(
-            outcome="existing_in_progress",
-            job=active_job,
-        )
+        # A "zombie" — job exists in DB but never got picked up by a worker
+        # (lost from the arq queue on a restart) and has gone stale. It will
+        # never progress on its own, so fail it and let a fresh job supersede
+        # it instead of letting the UI hang on it forever.
+        zombie_cutoff = datetime.utcnow() - timedelta(minutes=PENDING_STALE_MINUTES)
+        is_zombie = active_job.updated_at is not None and active_job.updated_at < zombie_cutoff
+        if is_zombie:
+            active_job.status = JobStatus.FAILED
+            active_job.error = f"Задача зависла при обработке (последнее обновление {active_job.updated_at:%H:%M:%S}) — запущена заново"
+            await db.commit()
+            logger.info(
+                "URL_DEDUP_ZOMBIE_FOUND job=%s url=%s user=%s — failing & creating new",
+                active_job.id, url_str, user.id,
+            )
+        else:
+            return JobCreationResult(
+                outcome="existing_in_progress",
+                job=active_job,
+            )
 
     # Fast-path 3: URL parsed by another user — cached replay
     # Instead of returning library_hit instantly, create a real Job
