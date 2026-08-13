@@ -89,7 +89,7 @@ class Settings(BaseSettings):
     whisper_model: str = "whisper-large-v3-turbo"
     vision_model: str = "openai/gpt-4o-mini"
     text_model: str = "claude-sonnet-4-6"
-    light_text_model: str = "opencode/deepseek-v4-flash-free"
+    light_text_model: str = "nvidia/nemotron-3.5-lightning:free"
     fallback_text_model: str = "openai/gpt-4.1"
 
     # Telegram
