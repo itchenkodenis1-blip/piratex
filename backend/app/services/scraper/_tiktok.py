@@ -116,9 +116,22 @@ async def _ytdlp_tiktok_metadata(url: str) -> dict | None:
     loop = asyncio.get_running_loop()
 
     def _run():
-        with yt_dlp.YoutubeDL(opts) as ydl:
-            info = ydl.extract_info(url, download=False)
+        last_err: Exception | None = None
+        for attempt in range(3):
+            try:
+                with yt_dlp.YoutubeDL(opts) as ydl:
+                    info = ydl.extract_info(url, download=False)
+            except Exception as e:
+                last_err = e
+                if attempt < 2:
+                    import time
+                    time.sleep(2 * (attempt + 1))
+                    continue
+                logger.warning("[tiktok] yt-dlp attempt %d/3 failed url=%s err=%s", attempt + 1, url, type(e).__name__)
+                continue
             if not info:
+                if attempt < 2:
+                    continue
                 return None
             video_url = info.get("url") or ""
             audio_url = None
@@ -147,6 +160,8 @@ async def _ytdlp_tiktok_metadata(url: str) -> dict | None:
             if best_audio:
                 audio_url = best_audio["url"]
             if not video_url:
+                if attempt < 2:
+                    continue
                 return None
             return {
                 "video_url": video_url,
@@ -160,6 +175,8 @@ async def _ytdlp_tiktok_metadata(url: str) -> dict | None:
                 "comment_count": info.get("comment_count"),
                 "thumbnail": info.get("thumbnail"),
             }
+        logger.warning("[tiktok] yt-dlp exhausted retries url=%s err=%s", url, last_err)
+        return None
 
     try:
         return await loop.run_in_executor(None, _run)

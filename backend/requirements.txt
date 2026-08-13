@@ -19,7 +19,7 @@ slowapi>=0.1.9,<1.0
 yookassa>=3.5,<4.0
 stripe>=11.0,<15.0  # payment provider
 json-repair>=0.30,<1.0
-yt-dlp>=2025.3,<2026.0
+yt-dlp>=2026.0,<2027.0
 
 # Testing
 pytest>=8.0,<9.0
