@@ -437,52 +437,7 @@ async def _stream_refine(
 
     except Exception as e:
         logger.warning("Refine OpenRouter failed (%s): %s", type(e).__name__, e)
-        # Fallback to direct Anthropic if user has their own key
-        try:
-            from anthropic import AsyncAnthropic, AuthenticationError, RateLimitError
-
-            anthropic_key = (
-                settings.anthropic_api_key
-                # Note: user's personal key not available here without db lookup
-            )
-            if not anthropic_key:
-                raise RuntimeError("No Anthropic fallback key")
-
-            client = AsyncAnthropic(api_key=anthropic_key)
-            async with client.messages.stream(
-                model=settings.light_text_model,
-                system=[{
-                    "type": "text",
-                    "text": system_prompt,
-                    "cache_control": {"type": "ephemeral"},
-                }],
-                messages=[{"role": "user", "content": user_message}],
-                max_tokens=4096,
-                timeout=60.0,
-            ) as stream:
-                usage_counted = False
-                async for text in stream.text_stream:
-                    if await request.is_disconnected():
-                        return
-                    if not usage_counted and user_id:
-                        try:
-                            await increment_refine_usage(user_id)
-                        except Exception:
-                            logger.warning("Failed to increment refine usage for %s", user_id)
-                        usage_counted = True
-                    yield f"data: {json.dumps({'t': text})}\n\n"
-
-            yield f"data: {json.dumps({'done': True})}\n\n"
-
-        except (AuthenticationError, RateLimitError, Exception) as fb_err:
-            logger.error("Refine fallback also failed: %s", fb_err)
-            yield f"data: {json.dumps({'error': f'Refinement failed: {type(fb_err).__name__}: {fb_err}'})}\n\n"
-
-            yield f"data: {json.dumps({'done': True})}\n\n"
-            logger.info("Refine GPT-5.4 fallback succeeded")
-        except Exception as fallback_err:
-            logger.error("Refine GPT fallback also failed: %s", fallback_err)
-            yield f"data: {json.dumps({'error': 'Refinement failed. Please try again.'})}\n\n"
+        yield f"data: {json.dumps({'error': f'OpenRouter failed: {type(e).__name__}: {e}'})}\n\n"
     finally:
         await client.close()
 
