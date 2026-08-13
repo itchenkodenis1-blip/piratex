@@ -436,7 +436,7 @@ async def _stream_refine(
         yield f"data: {json.dumps({'done': True})}\n\n"
 
     except Exception as e:
-        logger.warning("Refine OpenRouter failed (%s), falling back to direct Anthropic if available", type(e).__name__)
+        logger.warning("Refine OpenRouter failed (%s): %s", type(e).__name__, e)
         # Fallback to direct Anthropic if user has their own key
         try:
             from anthropic import AsyncAnthropic, AuthenticationError, RateLimitError
@@ -474,9 +474,9 @@ async def _stream_refine(
 
             yield f"data: {json.dumps({'done': True})}\n\n"
 
-        except (AuthenticationError, RateLimitError, Exception):
-            logger.error("Refine fallback also failed")
-            yield f"data: {json.dumps({'error': 'Refinement failed. Please try again.'})}\n\n"
+        except (AuthenticationError, RateLimitError, Exception) as fb_err:
+            logger.error("Refine fallback also failed: %s", fb_err)
+            yield f"data: {json.dumps({'error': f'Refinement failed: {type(fb_err).__name__}: {fb_err}'})}\n\n"
 
             yield f"data: {json.dumps({'done': True})}\n\n"
             logger.info("Refine GPT-5.4 fallback succeeded")
