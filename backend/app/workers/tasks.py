@@ -35,6 +35,47 @@ from app.services.vision_analyzer import _analyze_single_frame
 
 logger = logging.getLogger(__name__)
 
+_DEADLOCK_SQLSTATE = "40P01"
+_DEADLOCK_RETRIES = 4
+
+
+def _is_deadlock(exc: BaseException) -> bool:
+    """True if the wrapped exception is a Postgres deadlock (SQLSTATE 40P01).
+
+    asyncpg/SQLAlchemy may surface it as DBAPIError, OperationalError or a raw
+    asyncpg DeadlockDetectedError — check both class name and message.
+    """
+    name = type(exc).__name__
+    if "DeadlockDetected" in name:
+        return True
+    msg = str(exc)
+    return (
+        _DEADLOCK_SQLSTATE in msg
+        or "current transaction is aborted" in msg
+        or "deadlock detected" in msg.lower()
+    )
+
+
+async def _commit_job_retry(db, *, attempts: int = _DEADLOCK_RETRIES) -> None:
+    """Commit the current session tx, retrying on Postgres deadlock.
+
+    Deadlocks are transient: the loser process is rolled back by the server and
+    its retry releases the conflicting lock. Raw UPDATE ... WHERE id=... is
+    idempotent, so a straight retry after rollback is safe.
+    """
+    for attempt in range(1, attempts + 1):
+        try:
+            await db.commit()
+            return
+        except BaseException as e:
+            if not _is_deadlock(e) or attempt >= attempts:
+                raise
+            logger.warning(
+                "deadlock on commit (attempt %d/%d), rolling back and retrying: %s",
+                attempt, attempts, str(e)[:200],
+            )
+            await db.rollback()
+
 
 # ---------------------------------------------------------------------------
 # Cancellation guard — catches arq timeout (CancelledError) and marks FAILED
@@ -53,7 +94,7 @@ async def _fail_job_on_cancel(job_id: str, stage: str):
             if job and job.status not in (JobStatus.COMPLETED, JobStatus.FAILED):
                 job.status = JobStatus.FAILED
                 job.error = f"Превышено время обработки (этап: {stage})"
-                await db.commit()
+                await _commit_job_retry(db)
                 await progress_tracker.broadcast(job.id, {
                     "type": "progress",
                     "status": "failed",
@@ -153,7 +194,7 @@ async def _update_job(db, job: Job, status: JobStatus, progress: float, message:
     job.status = status
     job.progress = progress
     job.progress_message = message
-    await db.commit()
+    await _commit_job_retry(db)
     await progress_tracker.broadcast(
         job.id,
         {
@@ -280,7 +321,7 @@ async def _fail_job(db, job: Job, raw_error: str, *, is_user_error: bool = False
         job.progress = 0.0
         job.progress_message = None
         job.error = None
-        await db.commit()
+        await _commit_job_retry(db)
         logger.info(
             "Job %s hit transient error, auto-requeuing (attempt %d/%d): %s",
             job.id, retry_count + 2, _MAX_TRANSIENT_RETRIES + 1, raw_error[:120],
@@ -321,7 +362,7 @@ async def _fail_job(db, job: Job, raw_error: str, *, is_user_error: bool = False
 
     job.status = JobStatus.FAILED
     job.error = raw_error
-    await db.commit()
+    await _commit_job_retry(db)
 
     await progress_tracker.broadcast(
         job.id,
@@ -408,6 +449,25 @@ async def task_scrape_and_download(
         job = await db.get(Job, job_id)
         if not job:
             logger.error("Job %s not found", job_id)
+            return
+
+        # Worker-side dedup: if another active job for the same URL is already
+        # pending/running, drop this duplicate instead of downloading twice.
+        dup_res = await db.execute(
+            select(Job).where(
+                Job.url == job.url,
+                Job.user_id == job.user_id,
+                Job.status.notin_([JobStatus.COMPLETED, JobStatus.FAILED]),
+                Job.id != job.id,
+            ).limit(1)
+        )
+        if dup_res.scalar_one_or_none():
+            logger.info(
+                "Job %s dropped: duplicate of active job for url=%s", job.id, job.url
+            )
+            job.status = JobStatus.FAILED
+            job.error = "Это видео уже обрабатывается другим заданием"
+            await _commit_job_retry(db)
             return
 
         comments_task: asyncio.Task | None = None
