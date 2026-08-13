@@ -27,6 +27,7 @@ class ScrapeResult:
     comment_count: int | None = None
     thumbnail: str | None = None
     http_headers: dict | None = None  # Headers required to download (UA/Referer for TikTok CDN)
+    source_url: str | None = None  # Original page URL — for yt-dlp download fallback
 
 
 class PlatformScraper(ABC):

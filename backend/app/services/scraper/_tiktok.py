@@ -245,6 +245,7 @@ class TikTokScraper(PlatformScraper):
                     comment_count=yt.get("comment_count"),
                     thumbnail=yt.get("thumbnail"),
                     http_headers=yt.get("http_headers"),
+                    source_url=url
                 )
         except Exception as yt_err:
             logger.warning("[tiktok] yt-dlp fallback failed for %s: %s", url, yt_err)

@@ -189,6 +189,7 @@ async def download_video_to_local(
     filename: str | None = None,
     job_id: str | None = None,
     http_headers: dict | None = None,
+    source_url: str | None = None,
 ) -> Path:
     """Download video from a direct URL to local storage.
 
@@ -229,7 +230,17 @@ async def download_video_to_local(
         logger.info("Merged video+audio: %s (%d bytes)", output_path, output_path.stat().st_size)
     else:
         # Single stream — download directly
-        await _download_file(video_url, output_path, http_headers)
+        try:
+            await _download_file(video_url, output_path, http_headers)
+        except Exception:
+            if not source_url:
+                raise
+            output_path.unlink(missing_ok=True)
+            logger.info(
+                "[download] httpx failed, retrying via yt-dlp source_url=%s job_id=%s",
+                _safe_domain(source_url), job_id,
+            )
+            await _download_via_ytdlp(source_url, output_path)
         logger.info("Video downloaded: %s (%d bytes)", output_path, output_path.stat().st_size)
 
     # Validate downloaded video
@@ -245,6 +256,46 @@ async def download_video_to_local(
     await storage.write_from_path(storage_key, output_path)
 
     return output_path
+
+
+def _ytdlp_download_sync(source_url: str, output_path: Path) -> None:
+    """Sync yt-dlp download (runs in executor)."""
+    import time as _t
+
+    import yt_dlp
+
+    opts: dict = {
+        "quiet": True,
+        "no_warnings": True,
+        "outtmpl": str(output_path),
+        "format": "best",
+        "socket_timeout": 60,
+        "noplaylist": True,
+    }
+    last_err: Exception | None = None
+    for attempt in range(3):
+        try:
+            with yt_dlp.YoutubeDL(opts) as ydl:
+                ydl.download([source_url])
+            return
+        except Exception as e:
+            last_err = e
+            output_path.unlink(missing_ok=True)
+            if attempt < 2:
+                _t.sleep(2 * (attempt + 1))
+    raise DownloadError(f"yt-dlp failed to download {source_url}: {last_err}")
+
+
+async def _download_via_ytdlp(source_url: str, output_path: Path) -> None:
+    """Download a page/poster URL using yt-dlp itself.
+
+    Some CDNs (TikTok webapp-prime) reject plain httpx downloads even with
+    headers, but accept yt-dlp's session-based request (cookies + UA).
+    """
+    import asyncio
+
+    loop = asyncio.get_running_loop()
+    await loop.run_in_executor(None, _ytdlp_download_sync, source_url, output_path)
 
 
 async def ensure_video_local(video_path: Path) -> Path:
