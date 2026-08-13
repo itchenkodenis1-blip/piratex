@@ -72,6 +72,7 @@ async def scrape_video(url: str, job_id: str | None = None) -> tuple[Path, dict]
         try:
             video_path = await download_video_to_local(
                 result.video_url, audio_url=result.audio_url, job_id=job_id,
+                http_headers=result.http_headers,
             )
             break  # Download succeeded
         except DownloadError as e:

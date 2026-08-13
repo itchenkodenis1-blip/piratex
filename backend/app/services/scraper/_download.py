@@ -73,13 +73,14 @@ async def _validate_video(path: Path) -> bool:
     return True
 
 
-async def _download_file(url: str, output_path: Path) -> None:
+async def _download_file(url: str, output_path: Path, http_headers: dict | None = None) -> None:
     """Download a file from URL to disk."""
     domain = _safe_domain(url)
     t0 = time.monotonic()
     try:
+        headers = http_headers or {}
         async with httpx.AsyncClient(timeout=120, follow_redirects=True) as client:
-            async with client.stream("GET", url) as resp:
+            async with client.stream("GET", url, headers=headers) as resp:
                 resp.raise_for_status()
                 content_length = resp.headers.get("content-length", "unknown")
                 content_type = resp.headers.get("content-type", "unknown")
@@ -187,6 +188,7 @@ async def download_video_to_local(
     audio_url: str | None = None,
     filename: str | None = None,
     job_id: str | None = None,
+    http_headers: dict | None = None,
 ) -> Path:
     """Download video from a direct URL to local storage.
 
@@ -216,8 +218,8 @@ async def download_video_to_local(
         )
         try:
             await asyncio.gather(
-                _download_file(video_url, video_only),
-                _download_file(audio_url, audio_only),
+                _download_file(video_url, video_only, http_headers),
+                _download_file(audio_url, audio_only, http_headers),
             )
             await _merge_video_audio(video_only, audio_only, output_path)
         except Exception:
@@ -227,7 +229,7 @@ async def download_video_to_local(
         logger.info("Merged video+audio: %s (%d bytes)", output_path, output_path.stat().st_size)
     else:
         # Single stream — download directly
-        await _download_file(video_url, output_path)
+        await _download_file(video_url, output_path, http_headers)
         logger.info("Video downloaded: %s (%d bytes)", output_path, output_path.stat().st_size)
 
     # Validate downloaded video

@@ -26,6 +26,7 @@ class ScrapeResult:
     like_count: int | None = None
     comment_count: int | None = None
     thumbnail: str | None = None
+    http_headers: dict | None = None  # Headers required to download (UA/Referer for TikTok CDN)
 
 
 class PlatformScraper(ABC):

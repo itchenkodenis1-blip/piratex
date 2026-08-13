@@ -141,6 +141,8 @@ async def _ytdlp_tiktok_metadata(url: str) -> dict | None:
             formats = info.get("formats") or []
             best_video = None
             best_audio = None
+            _hg = None
+            _selected = info.get("url") or None
             for f in formats:
                 if f.get("protocol") in ("m3u8_native", "m3u8"):
                     continue
@@ -152,6 +154,7 @@ async def _ytdlp_tiktok_metadata(url: str) -> dict | None:
                 if vcodec != "none" and acodec not in ("none", None):
                     if not video_url:
                         video_url = f_url
+                        _selected = f_url
                     if not best_video:
                         best_video = f
                 elif vcodec != "none" and not best_video:
@@ -160,8 +163,15 @@ async def _ytdlp_tiktok_metadata(url: str) -> dict | None:
                     best_audio = f
             if not video_url and best_video:
                 video_url = best_video["url"]
+                _selected = best_video["url"]
             if best_audio:
                 audio_url = best_audio["url"]
+            _hg = (info.get("http_headers") or {}).copy()
+            for f in formats:
+                fh = f.get("http_headers") or {}
+                if fh and f.get("url") == video_url:
+                    _hg = fh.copy()
+                    break
             if not video_url:
                 if attempt < max_attempts - 1:
                     import time
@@ -179,6 +189,7 @@ async def _ytdlp_tiktok_metadata(url: str) -> dict | None:
                 "like_count": info.get("like_count"),
                 "comment_count": info.get("comment_count"),
                 "thumbnail": info.get("thumbnail"),
+                "http_headers": _hg,  # dict[str,str]|None  (built in _run scope)
             }
         logger.warning("[tiktok] yt-dlp exhausted retries url=%s err=%s", url, last_err)
         return None
@@ -233,6 +244,7 @@ class TikTokScraper(PlatformScraper):
                     like_count=yt.get("like_count"),
                     comment_count=yt.get("comment_count"),
                     thumbnail=yt.get("thumbnail"),
+                    http_headers=yt.get("http_headers"),
                 )
         except Exception as yt_err:
             logger.warning("[tiktok] yt-dlp fallback failed for %s: %s", url, yt_err)
