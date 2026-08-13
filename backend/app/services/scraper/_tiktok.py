@@ -117,20 +117,23 @@ async def _ytdlp_tiktok_metadata(url: str) -> dict | None:
 
     def _run():
         last_err: Exception | None = None
-        for attempt in range(3):
+        max_attempts = 6
+        for attempt in range(max_attempts):
             try:
                 with yt_dlp.YoutubeDL(opts) as ydl:
                     info = ydl.extract_info(url, download=False)
             except Exception as e:
                 last_err = e
-                if attempt < 2:
+                if attempt < max_attempts - 1:
                     import time
-                    time.sleep(2 * (attempt + 1))
+                    time.sleep(2 + 2 * attempt)
                     continue
-                logger.warning("[tiktok] yt-dlp attempt %d/3 failed url=%s err=%s", attempt + 1, url, type(e).__name__)
+                logger.warning("[tiktok] yt-dlp attempt %d/%d failed url=%s err=%s", attempt + 1, max_attempts, url, type(e).__name__)
                 continue
             if not info:
-                if attempt < 2:
+                if attempt < max_attempts - 1:
+                    import time
+                    time.sleep(2 + 2 * attempt)
                     continue
                 return None
             video_url = info.get("url") or ""
@@ -160,7 +163,9 @@ async def _ytdlp_tiktok_metadata(url: str) -> dict | None:
             if best_audio:
                 audio_url = best_audio["url"]
             if not video_url:
-                if attempt < 2:
+                if attempt < max_attempts - 1:
+                    import time
+                    time.sleep(2 + 2 * attempt)
                     continue
                 return None
             return {
