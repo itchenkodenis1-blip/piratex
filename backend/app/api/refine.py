@@ -418,6 +418,7 @@ async def _stream_refine(
             max_tokens=4096,
             timeout=60.0,
             stream=True,
+            extra_body={"reasoning": {"enabled": False}},
         )
         usage_counted = False
         async for chunk in stream:
