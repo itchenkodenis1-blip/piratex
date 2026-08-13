@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 from app.config import settings
@@ -8,8 +9,16 @@ from app.services.scraper._base import PlatformScraper, ScrapeResult, _first
 logger = logging.getLogger(__name__)
 
 
-def _parse_apidojo(item: dict, url: str) -> ScrapeResult:
-    """Parse apidojo/tiktok-scraper response into ScrapeResult."""
+def _parse_apidojo(item: dict, url: str) -> ScrapeResult | None:
+    """Parse apidojo/tiktok-scraper response into ScrapeResult.
+
+    Returns None when the actor reports no results (couldn't resolve the post)
+    instead of raising — the caller falls through to yt-dlp / clockworks.
+    """
+    if "noResults" in item:
+        logger.warning("[tiktok:apidojo] noResults url=%s", url)
+        return None
+
     video = item.get("video") or {}
     channel = item.get("channel") or {}
 
@@ -25,10 +34,7 @@ def _parse_apidojo(item: dict, url: str) -> ScrapeResult:
             "[tiktok:apidojo] NO VIDEO URL url=%s item_summary=%s",
             url, _summarise_item(item),
         )
-        raise DownloadError(
-            "TikTok: актор не вернул video URL. "
-            "Возможно, это фото-слайдшоу — поддерживаются только видео."
-        )
+        return None
 
     return ScrapeResult(
         video_url=video_url,
@@ -91,11 +97,83 @@ def _parse_clockworks(item: dict, url: str) -> ScrapeResult:
     )
 
 
-class TikTokScraper(PlatformScraper):
-    """TikTok video scraper via Apify.
+async def _ytdlp_tiktok_metadata(url: str) -> dict | None:
+    """Fetch TikTok metadata + direct video URL via yt-dlp.
 
-    Primary:  apidojo/tiktok-scraper  — returns video URL + metadata
-    Fallback: clockworks/tiktok-scraper — metadata only (no video URL)
+    Used as fallback when the apidojo actor returns noResults (it has been
+    broken on all posts since ~Aug 2026) — yt-dlp resolves TikTok reliably.
+    """
+    import yt_dlp
+
+    opts: dict = {
+        "quiet": True,
+        "no_warnings": True,
+        "skip_download": True,
+        "socket_timeout": 60,
+        "noplaylist": True,
+    }
+
+    loop = asyncio.get_running_loop()
+
+    def _run():
+        with yt_dlp.YoutubeDL(opts) as ydl:
+            info = ydl.extract_info(url, download=False)
+            if not info:
+                return None
+            video_url = info.get("url") or ""
+            audio_url = None
+            formats = info.get("formats") or []
+            best_video = None
+            best_audio = None
+            for f in formats:
+                if f.get("protocol") in ("m3u8_native", "m3u8"):
+                    continue
+                vcodec = f.get("vcodec") or ""
+                acodec = f.get("acodec") or ""
+                f_url = f.get("url") or ""
+                if not f_url:
+                    continue
+                if vcodec != "none" and acodec not in ("none", None):
+                    if not video_url:
+                        video_url = f_url
+                    if not best_video:
+                        best_video = f
+                elif vcodec != "none" and not best_video:
+                    best_video = f
+                elif acodec != "none" and not best_audio:
+                    best_audio = f
+            if not video_url and best_video:
+                video_url = best_video["url"]
+            if best_audio:
+                audio_url = best_audio["url"]
+            if not video_url:
+                return None
+            return {
+                "video_url": video_url,
+                "audio_url": audio_url,
+                "title": info.get("title"),
+                "duration": info.get("duration"),
+                "uploader": info.get("uploader") or info.get("channel"),
+                "description": info.get("description"),
+                "view_count": info.get("view_count"),
+                "like_count": info.get("like_count"),
+                "comment_count": info.get("comment_count"),
+                "thumbnail": info.get("thumbnail"),
+            }
+
+    try:
+        return await loop.run_in_executor(None, _run)
+    except Exception as e:
+        logger.warning("[tiktok] yt-dlp fallback failed url=%s err=%s", url, type(e).__name__)
+        return None
+
+
+class TikTokScraper(PlatformScraper):
+    """TikTok video scraper.
+
+    Primary:  apidojo/tiktok-scraper — returns video URL + metadata
+    Fallback: yt-dlp — reliable direct video URL + metadata
+    Last:     clockworks/tiktok-scraper — metadata only (no video URL)
     """
 
     async def scrape(self, url: str) -> ScrapeResult:
@@ -103,43 +181,63 @@ class TikTokScraper(PlatformScraper):
         try:
             items = await run_actor(
                 actor_id=settings.apify_tiktok_actor,
-                input_data={"startUrls": [url]},
+                input_data={"startUrls": [{"url": url}]},
             )
-            item = items[0]
-            result = _parse_apidojo(item, url)
-            logger.info("[tiktok] apidojo OK for %s", url)
-            return result
-
-        except DownloadError:
-            raise
+            result = _parse_apidojo(items[0], url) if items else None
+            if result:
+                logger.info("[tiktok] apidojo OK for %s", url)
+                return result
+            logger.info("[tiktok] apidojo no usable result for %s — trying yt-dlp", url)
         except Exception as primary_err:
             logger.warning(
-                "[tiktok] apidojo failed for %s: %s — trying clockworks fallback",
+                "[tiktok] apidojo failed for %s: %s — trying yt-dlp",
                 url, primary_err,
             )
 
-        # --- Fallback: clockworks/tiktok-scraper (metadata only) ---
+        # --- Fallback: yt-dlp (reliable direct video URL) ---
+        try:
+            yt = await _ytdlp_tiktok_metadata(url)
+            if yt and yt.get("video_url"):
+                logger.info("[tiktok] yt-dlp OK for %s", url)
+                return ScrapeResult(
+                    video_url=yt["video_url"],
+                    audio_url=yt.get("audio_url"),
+                    title=yt.get("title"),
+                    duration=yt.get("duration"),
+                    platform="tiktok",
+                    uploader=yt.get("uploader"),
+                    description=yt.get("description"),
+                    view_count=yt.get("view_count"),
+                    like_count=yt.get("like_count"),
+                    comment_count=yt.get("comment_count"),
+                    thumbnail=yt.get("thumbnail"),
+                )
+        except Exception as yt_err:
+            logger.warning("[tiktok] yt-dlp fallback failed for %s: %s", url, yt_err)
+
+        # --- Last: clockworks/tiktok-scraper (metadata only) ---
         try:
             items = await run_actor(
                 actor_id=settings.apify_tiktok_fallback_actor,
                 input_data={"postURLs": [url], "maxItems": 1},
             )
-            item = items[0]
-            result = _parse_clockworks(item, url)
+            result = _parse_clockworks(items[0], url) if items else None
 
-            if not result.video_url:
+            if result and result.video_url:
+                return result
+
+            if result:
                 raise DownloadError(
                     "TikTok: не удалось получить ссылку на видео. "
                     "Возможно, видео приватное или удалено."
                 )
-
-            return result
+            raise DownloadError("TikTok: акторы не вернули данных о видео.")
 
         except DownloadError:
             raise
         except Exception as fallback_err:
             logger.error(
-                "[tiktok] Both apidojo and clockworks failed for %s: %s",
+                "[tiktok] apidojo, yt-dlp and clockworks all failed for %s: %s",
                 url, fallback_err,
             )
             raise DownloadError(

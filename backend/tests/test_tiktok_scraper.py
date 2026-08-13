@@ -1,4 +1,4 @@
-"""Tests for TikTok scraper: apidojo primary + clockworks fallback (Apify-only)."""
+"""Tests for TikTok scraper: apidojo primary + yt-dlp + clockworks cascade."""
 
 from unittest.mock import AsyncMock, patch
 
@@ -36,6 +36,9 @@ APIDOJO_RESPONSE = [{
     "postPage": "https://www.tiktok.com/@testuser/video/7524124293039426871",
 }]
 
+# --- apidojo returns noResults (broken actor, happens on all posts since Aug 2026) ---
+APIDOJO_NORESULTS = [{"noResults": True}, {"noResults": True}]
+
 # --- Realistic clockworks/tiktok-scraper response (no video URL) ---
 CLOCKWORKS_RESPONSE = [{
     "id": "7524124293039426871",
@@ -48,6 +51,20 @@ CLOCKWORKS_RESPONSE = [{
     "commentCount": 10,
     "isSlideshow": False,
 }]
+
+# --- Realistic yt-dlp metadata ---
+YTDLP_META = {
+    "video_url": "https://v16-webapp-prime.tiktok.com/video/direct.mp4",
+    "audio_url": None,
+    "title": "yt-dlp resolved video",
+    "duration": 34,
+    "uploader": "ytuser",
+    "description": "yt-dlp description",
+    "view_count": 12345,
+    "like_count": 678,
+    "comment_count": 90,
+    "thumbnail": "https://p19-sign.tiktokcdn-us.com/cover.jpg",
+}
 
 
 class TestTikTokScraperPrimary:
@@ -68,28 +85,68 @@ class TestTikTokScraperPrimary:
         assert result.comment_count == 28_600
         assert result.thumbnail == "https://p16-sign.tiktokcdn.com/cover.jpg"
 
-    async def test_no_video_url_raises(self):
-        """apidojo returns item but video.url is missing → DownloadError."""
+    async def test_no_video_url_falls_through_to_ytdlp(self):
+        """apidojo item without video.url → yt-dlp fallback resolves it."""
         scraper = TikTokScraper()
         no_video = [{"title": "test", "video": {"width": 576}, "channel": {}}]
-        with patch("app.services.scraper._tiktok.run_actor", return_value=no_video):
-            with pytest.raises(DownloadError, match="video URL"):
-                await scraper.scrape("https://www.tiktok.com/@testuser/video/123")
+        call_count = 0
 
-    async def test_no_video_object_raises(self):
-        """apidojo returns item without video object → DownloadError."""
+        async def mock_run_actor(actor_id, input_data, **kwargs):
+            nonlocal call_count
+            call_count += 1
+            return no_video if call_count == 1 else CLOCKWORKS_RESPONSE
+
+        with patch("app.services.scraper._tiktok.run_actor", side_effect=mock_run_actor):
+            with patch(
+                "app.services.scraper._tiktok._ytdlp_tiktok_metadata",
+                new=AsyncMock(return_value=YTDLP_META),
+            ):
+                result = await scraper.scrape("https://www.tiktok.com/@testuser/video/123")
+
+        assert result.video_url == YTDLP_META["video_url"]
+        assert result.title == YTDLP_META["title"]
+        assert result.duration == 34
+
+    async def test_no_video_object_falls_through_to_ytdlp(self):
+        """apidojo item without video object → yt-dlp fallback."""
         scraper = TikTokScraper()
         no_video = [{"title": "test", "channel": {}}]
         with patch("app.services.scraper._tiktok.run_actor", return_value=no_video):
-            with pytest.raises(DownloadError, match="video URL"):
-                await scraper.scrape("https://www.tiktok.com/@testuser/video/456")
+            with patch(
+                "app.services.scraper._tiktok._ytdlp_tiktok_metadata",
+                new=AsyncMock(return_value=YTDLP_META),
+            ):
+                result = await scraper.scrape("https://www.tiktok.com/@testuser/video/456")
+
+        assert result.video_url == YTDLP_META["video_url"]
 
 
 class TestTikTokScraperFallback:
-    """Cascade: apidojo fails → clockworks fallback."""
+    """Cascade: apidojo fails/noResults → yt-dlp → clockworks."""
+
+    async def test_ytdlp_fallback_on_apidojo_noresults(self):
+        """apidojo returns noResults (broken actor) → yt-dlp resolves video."""
+        scraper = TikTokScraper()
+        call_count = 0
+
+        async def mock_run_actor(actor_id, input_data, **kwargs):
+            nonlocal call_count
+            call_count += 1
+            return APIDOJO_NORESULTS if call_count == 1 else CLOCKWORKS_RESPONSE
+
+        with patch("app.services.scraper._tiktok.run_actor", side_effect=mock_run_actor):
+            with patch(
+                "app.services.scraper._tiktok._ytdlp_tiktok_metadata",
+                new=AsyncMock(return_value=YTDLP_META),
+            ):
+                result = await scraper.scrape("https://www.tiktok.com/@testuser/video/123")
+
+        assert result.video_url == YTDLP_META["video_url"]
+        assert result.platform == "tiktok"
+        assert call_count == 1  # yt-dlp succeeded, clockworks never called
 
     async def test_fallback_called_on_apidojo_error(self):
-        """When apidojo raises non-DownloadError, clockworks is called."""
+        """apidojo raises network error → yt-dlp fails → clockworks called."""
         scraper = TikTokScraper()
         call_count = 0
 
@@ -101,27 +158,27 @@ class TestTikTokScraperFallback:
             return CLOCKWORKS_RESPONSE
 
         with patch("app.services.scraper._tiktok.run_actor", side_effect=mock_run_actor):
-            # clockworks has no video URL → should raise
-            with pytest.raises(DownloadError, match="ссылку на видео"):
-                await scraper.scrape("https://www.tiktok.com/@testuser/video/123")
-            assert call_count == 2  # apidojo + clockworks
+            with patch(
+                "app.services.scraper._tiktok._ytdlp_tiktok_metadata",
+                new=AsyncMock(return_value=None),
+            ):
+                # clockworks has no video URL → should raise
+                with pytest.raises(DownloadError, match="ссылку на видео"):
+                    await scraper.scrape("https://www.tiktok.com/@testuser/video/123")
+                assert call_count == 2  # apidojo + clockworks
 
     async def test_no_fallback_on_success(self):
-        """When apidojo succeeds, clockworks is NOT called."""
+        """When apidojo succeeds, yt-dlp is NOT called."""
         scraper = TikTokScraper()
         with patch("app.services.scraper._tiktok.run_actor", return_value=APIDOJO_RESPONSE) as mock:
-            result = await scraper.scrape("https://www.tiktok.com/@testuser/video/123")
-            mock.assert_called_once()
-            assert result.video_url is not None
-
-    async def test_no_fallback_on_download_error(self):
-        """DownloadError from apidojo (slideshow) → NOT retried with clockworks."""
-        scraper = TikTokScraper()
-        no_video = [{"title": "slideshow", "video": {}, "channel": {}}]
-        with patch("app.services.scraper._tiktok.run_actor", return_value=no_video) as mock:
-            with pytest.raises(DownloadError):
-                await scraper.scrape("https://www.tiktok.com/@testuser/video/789")
-            mock.assert_called_once()  # only apidojo, no clockworks
+            with patch(
+                "app.services.scraper._tiktok._ytdlp_tiktok_metadata",
+                new=AsyncMock(return_value=YTDLP_META),
+            ) as yt_mock:
+                result = await scraper.scrape("https://www.tiktok.com/@testuser/video/123")
+                mock.assert_called_once()
+                yt_mock.assert_not_called()
+                assert result.video_url is not None
 
     async def test_clockworks_slideshow_rejected(self):
         """Clockworks fallback with isSlideshow=True → rejected."""
@@ -137,19 +194,27 @@ class TestTikTokScraperFallback:
             return slideshow
 
         with patch("app.services.scraper._tiktok.run_actor", side_effect=mock_run_actor):
-            with pytest.raises(DownloadError, match="[Сс]лайдшоу|slideshow|фото"):
-                await scraper.scrape("https://www.tiktok.com/@user/video/789")
+            with patch(
+                "app.services.scraper._tiktok._ytdlp_tiktok_metadata",
+                new=AsyncMock(return_value=None),
+            ):
+                with pytest.raises(DownloadError, match="[Сс]лайдшоу|slideshow|фото"):
+                    await scraper.scrape("https://www.tiktok.com/@user/video/789")
 
     async def test_both_fail_gives_clear_error(self):
-        """Both actors fail → clear error message."""
+        """All three sources fail → clear error message."""
         scraper = TikTokScraper()
 
         async def mock_run_actor(actor_id, input_data, **kwargs):
             raise Exception("actor unavailable")
 
         with patch("app.services.scraper._tiktok.run_actor", side_effect=mock_run_actor):
-            with pytest.raises(DownloadError, match="не удалось получить данные"):
-                await scraper.scrape("https://www.tiktok.com/@user/video/000")
+            with patch(
+                "app.services.scraper._tiktok._ytdlp_tiktok_metadata",
+                new=AsyncMock(return_value=None),
+            ):
+                with pytest.raises(DownloadError, match="не удалось получить данные"):
+                    await scraper.scrape("https://www.tiktok.com/@user/video/000")
 
 
 class TestTikTokScraperComments:
