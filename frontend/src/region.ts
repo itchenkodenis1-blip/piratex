@@ -43,7 +43,7 @@ const REGION_CONFIGS: Record<Region, RegionConfig> = {
     currency: "RUB",
     currencySymbol: "\u20BD",
     paymentProvider: "cloudpayments",
-    authProviders: ["magic_link", "yandex"],
+    authProviders: ["magic_link"],
   },
   int: {
     region: "int",
