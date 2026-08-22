@@ -514,6 +514,19 @@ export const pt: Translations = {
   home_step_ai: "IA analisa",
   home_step_script: "Roteiro pronto",
 
+  home_benefits_title: "O que você ganha com uma análise",
+  home_feat_hooks_t: "Análise do hook",
+  home_feat_hooks_d: "Os primeiros segundos quadro a quadro: o que prende a atenção e por que os espectadores ficam",
+  home_feat_struct_t: "Estrutura do vídeo",
+  home_feat_struct_d: "Como a retenção é construída do primeiro quadro ao final, segundo a segundo",
+  home_feat_retain_t: "Pontos de abandono",
+  home_feat_retain_d: "Onde os espectadores saem e o que os reels virais fazem a respeito",
+  home_feat_script_t: "Roteiro de adaptação",
+  home_feat_script_d: "Texto pronto para o seu nicho — insira seus detalhes e grave",
+  home_cta_title: "As primeiras análises são grátis",
+  home_cta_sub: "Sem cadastro, sem cartão. Cole um link — resultado em minutos.",
+  home_cta_btn: "Analisar um reel grátis",
+
   // AI Refine
   refine_improve: "Melhorar",
   refine_strengthen_hook: "Reforcar gancho",

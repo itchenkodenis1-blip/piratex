@@ -505,6 +505,18 @@ export interface Translations {
   home_step_link: string;
   home_step_ai: string;
   home_step_script: string;
+    home_benefits_title: string;
+    home_feat_hooks_t: string;
+    home_feat_hooks_d: string;
+    home_feat_struct_t: string;
+    home_feat_struct_d: string;
+    home_feat_retain_t: string;
+    home_feat_retain_d: string;
+    home_feat_script_t: string;
+    home_feat_script_d: string;
+    home_cta_title: string;
+    home_cta_sub: string;
+    home_cta_btn: string;
 
   // AI Refine
   refine_improve: string;

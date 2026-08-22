@@ -530,6 +530,19 @@ export const ru: Translations = {
   home_step_ai: "ИИ анализирует",
   home_step_script: "Готовый сценарий",
 
+  home_benefits_title: "Что вы получите за один разбор",
+  home_feat_hooks_t: "Разбор хука",
+  home_feat_hooks_d: "Первые секунды по кадрам: что цепляет взгляд и почему зритель остаётся",
+  home_feat_struct_t: "Скелет ролика",
+  home_feat_struct_d: "Как устроено удержание от первого кадра до финала — по секундам",
+  home_feat_retain_t: "Точки провала",
+  home_feat_retain_d: "Где зритель отваливается и как это чинят залетевшие рилсы",
+  home_feat_script_t: "Сценарий адаптации",
+  home_feat_script_d: "Готовый текст под вашу нишу — вставил своё и снимай",
+  home_cta_title: "Первые разборы — бесплатно",
+  home_cta_sub: "Без регистрации и карты. Вставьте ссылку — результат через пару минут.",
+  home_cta_btn: "Разобрать рилс бесплатно",
+
   // AI Refine
   refine_improve: "Улучшить",
   refine_strengthen_hook: "Усилить зацепку",

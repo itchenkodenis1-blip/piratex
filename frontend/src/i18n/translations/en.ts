@@ -530,6 +530,19 @@ export const en: Translations = {
   home_step_ai: "AI analyzes",
   home_step_script: "Ready script",
 
+  home_benefits_title: "What you get from one analysis",
+  home_feat_hooks_t: "Hook breakdown",
+  home_feat_hooks_d: "First seconds frame by frame: what grabs attention and why viewers stay",
+  home_feat_struct_t: "Video skeleton",
+  home_feat_struct_d: "How retention is built from first frame to finale, second by second",
+  home_feat_retain_t: "Drop-off points",
+  home_feat_retain_d: "Where viewers leave and what viral reels do about it",
+  home_feat_script_t: "Adaptation script",
+  home_feat_script_d: "Ready-to-use text for your niche — plug in your details and shoot",
+  home_cta_title: "First analyses are free",
+  home_cta_sub: "No sign-up, no card. Paste a link — results in minutes.",
+  home_cta_btn: "Analyze a reel for free",
+
   // AI Refine
   refine_improve: "Improve",
   refine_strengthen_hook: "Strengthen hook",

@@ -513,6 +513,19 @@ export const de: Translations = {
   home_step_ai: "KI analysiert",
   home_step_script: "Fertiges Skript",
 
+  home_benefits_title: "Was du aus einer Analyse bekommst",
+  home_feat_hooks_t: "Hook-Analyse",
+  home_feat_hooks_d: "Die ersten Sekunden Bild für Bild: Was Aufmerksamkeit erzeugt und warum Zuschauer bleiben",
+  home_feat_struct_t: "Gerüst des Videos",
+  home_feat_struct_d: "Wie die Bindung vom ersten Frame bis zum Ende aufgebaut ist, Sekunde für Sekunde",
+  home_feat_retain_t: "Absprungpunkte",
+  home_feat_retain_d: "Wo Zuschauer abspringen und was virale Reels dagegen tun",
+  home_feat_script_t: "Anpassungsskript",
+  home_feat_script_d: "Fertiger Text für deine Nische — einsetzen und drehen",
+  home_cta_title: "Erste Analysen sind kostenlos",
+  home_cta_sub: "Keine Registrierung, keine Karte. Link einfügen — Ergebnis in Minuten.",
+  home_cta_btn: "Reel kostenlos analysieren",
+
   // AI Refine
   refine_improve: "Verbessern",
   refine_strengthen_hook: "Hook verstarken",

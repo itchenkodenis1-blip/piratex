@@ -228,61 +228,122 @@ export function HomePage({ user, usage, refreshUser }: HomePageProps) {
   return (
     <>
       {state === "input" && (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] sm:min-h-[70vh] mt-2 sm:-mt-12 space-y-8 sm:space-y-10">
-          <div className="text-center space-y-5">
-            <p className="text-xs tracking-[0.25em] uppercase text-cream-muted font-medium">
+        <div className="space-y-20 sm:space-y-28 pb-10">
+          {/* HERO */}
+          <section className="flex flex-col items-center text-center justify-center min-h-[55vh] sm:min-h-[60vh] mt-2 sm:-mt-12 space-y-6">
+            <p className="px-4 py-1.5 rounded-full border border-border-subtle text-xs tracking-[0.25em] uppercase text-cream-muted font-medium">
               {t.app_tagline}
             </p>
-            <h2 className="text-5xl md:text-6xl lg:text-7xl font-serif font-medium leading-[1.1] text-cream">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-medium leading-[1.05] text-cream max-w-3xl">
               {t.home_title}
-            </h2>
-            <p className="text-lg text-cream-dim max-w-xl mx-auto leading-relaxed">
+            </h1>
+            <p className="text-lg text-cream-dim max-w-xl leading-relaxed">
               {t.home_subtitle}
             </p>
-          </div>
-          <UrlInput
-            onSubmit={handleSubmit}
-            loading={false}
-            initialValue={initialUrl}
-            requireCaptcha={!user || user.is_anonymous}
-          />
-          {/* Usage display */}
-          {usageText && (
-            <p className="text-center text-sm text-cream-muted">{usageText}</p>
-          )}
-          {/* 3-step visual */}
-          <div className="flex items-center gap-4 sm:gap-6 md:gap-10 pt-4">
-            <div className="flex flex-col items-center gap-2 text-center">
-              <div className="w-12 h-12 rounded-full bg-surface-light border border-border-subtle flex items-center justify-center text-xl">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-cream-dim">
-                  <path d="M8 4H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
-                  <path d="M16 4l-4-2v4l4-2z" />
-                  <path d="M10 10h6" />
-                </svg>
-              </div>
-              <span className="text-xs text-cream-muted max-w-[100px]">{t.home_step_link}</span>
+            <div id="reel-input" className="w-full flex justify-center pt-2 scroll-mt-24">
+              <UrlInput
+                onSubmit={handleSubmit}
+                loading={false}
+                initialValue={initialUrl}
+                requireCaptcha={!user || user.is_anonymous}
+              />
             </div>
-            <div className="h-px w-6 bg-border-subtle" />
-            <div className="flex flex-col items-center gap-2 text-center">
-              <div className="w-12 h-12 rounded-full bg-surface-light border border-border-subtle flex items-center justify-center text-xl">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-cream-dim">
-                  <circle cx="10" cy="10" r="7" />
-                  <path d="M10 7v3l2 2" />
-                </svg>
-              </div>
-              <span className="text-xs text-cream-muted max-w-[100px]">{t.home_step_ai}</span>
+            {usageText && (
+              <p className="text-center text-sm text-cream-muted">{usageText}</p>
+            )}
+          </section>
+
+          {/* BENEFITS */}
+          <section className="max-w-6xl mx-auto px-4 space-y-8 sm:space-y-10">
+            <h2 className="text-center text-3xl md:text-4xl font-serif font-medium text-cream">
+              {t.home_benefits_title}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {[
+                {
+                  icon: (
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <circle cx="9" cy="9" r="6" /><path d="M13.5 13.5L17 17" /><path d="M6.5 9h5M9 6.5v5" />
+                    </svg>
+                  ),
+                  title: t.home_feat_hooks_t,
+                  desc: t.home_feat_hooks_d,
+                },
+                {
+                  icon: (
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <rect x="4" y="3" width="12" height="14" rx="1.5" /><path d="M7 7h6M7 10h6M7 13h3" />
+                    </svg>
+                  ),
+                  title: t.home_feat_struct_t,
+                  desc: t.home_feat_struct_d,
+                },
+                {
+                  icon: (
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M3 15l4-5 3 3 4-6 3 4" /><circle cx="16.5" cy="4.5" r="0.5" fill="currentColor" />
+                    </svg>
+                  ),
+                  title: t.home_feat_retain_t,
+                  desc: t.home_feat_retain_d,
+                },
+                {
+                  icon: (
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M6 3h8v14H6z" /><path d="M8.5 6h3M8.5 9h3M8.5 12h2" />
+                    </svg>
+                  ),
+                  title: t.home_feat_script_t,
+                  desc: t.home_feat_script_d,
+                },
+              ].map((f) => (
+                <div
+                  key={f.title as string}
+                  className="rounded-2xl bg-surface-light border border-border-subtle p-6 space-y-3 hover:border-green-400/40 transition-colors"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-green-400/10 border border-green-400/30 flex items-center justify-center text-green-400">
+                    {f.icon}
+                  </div>
+                  <h3 className="font-serif text-lg text-cream">{f.title}</h3>
+                  <p className="text-sm text-cream-muted leading-relaxed">{f.desc}</p>
+                </div>
+              ))}
             </div>
-            <div className="h-px w-6 bg-border-subtle" />
-            <div className="flex flex-col items-center gap-2 text-center">
-              <div className="w-12 h-12 rounded-full bg-surface-light border border-border-subtle flex items-center justify-center text-xl">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-cream-dim">
-                  <path d="M4 4h12v12H4z" />
-                  <path d="M7 8h6M7 11h4" />
-                </svg>
-              </div>
-              <span className="text-xs text-cream-muted max-w-[100px]">{t.home_step_script}</span>
+          </section>
+
+          {/* HOW IT WORKS */}
+          <section className="max-w-4xl mx-auto px-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6">
+              {[
+                { n: "01", label: t.home_step_link },
+                { n: "02", label: t.home_step_ai },
+                { n: "03", label: t.home_step_script },
+              ].map((s, i) => (
+                <div key={s.n} className="flex items-start gap-4 sm:flex-col sm:items-center sm:text-center sm:gap-2">
+                  <span className="font-serif text-4xl text-green-400/70 leading-none">{s.n}</span>
+                  <div className="sm:space-y-1">
+                    <p className="text-cream font-medium">{s.label}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
+          </section>
+
+          {/* FINAL CTA */}
+          <section className="max-w-3xl mx-auto px-4">
+            <div className="rounded-3xl border border-green-400/25 bg-gradient-to-b from-surface-light to-transparent p-8 sm:p-12 text-center space-y-5">
+              <h2 className="text-3xl md:text-4xl font-serif font-medium text-cream">
+                {t.home_cta_title}
+              </h2>
+              <p className="text-cream-dim">{t.home_cta_sub}</p>
+              <button
+                onClick={() => document.getElementById("reel-input")?.scrollIntoView({ behavior: "smooth", block: "center" })}
+                className="px-7 py-3 bg-green-400 hover:bg-green-300 text-[#0C0C0C] rounded-full text-sm font-semibold transition-colors"
+              >
+                {t.home_cta_btn}
+              </button>
+            </div>
+          </section>
         </div>
       )}
 
