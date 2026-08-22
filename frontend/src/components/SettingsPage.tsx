@@ -4,7 +4,8 @@ import { getSettings, updateSettings, getDefaultPrompts, getProfilePresets, getS
 import { NICHES } from "../constants/niches";
 import { extractInstagramUsername } from "../utils/instagram";
 import { useAuth } from "../hooks/useAuth";
-import { useTranslation, LANGUAGE_LABELS, LANGUAGE_FLAGS, SUPPORTED_LANGUAGES } from "../i18n";
+import { useTranslation, LANGUAGE_LABELS, LANGUAGE_FLAGS } from "../i18n";
+import { isViralexDomain } from "../region";
 import type { SupportedLanguage, Translations } from "../i18n";
 import { DEEP_ANALYSIS_KEY } from "../types";
 import type { UserProfile, ProfilePresets, SuggestedInterest, RadarSettings, DeepAnalysisCache } from "../types";
@@ -214,6 +215,12 @@ function PromptEditor({ label, hint, value, isCustom, defaultPrompt, onSave, t }
 /* ------------------------------------------------------------------ */
 /*  SettingsPage                                                       */
 /* ------------------------------------------------------------------ */
+
+// Языки в настройках = те же, что и в переключателе шапки (de/fr скрыты до спроса)
+const VISIBLE_LANGS = (["ru", "en", "pt"] as const).filter(
+  (c) => !isViralexDomain() || c !== "ru"
+);
+
 export function SettingsPage({ onClose }: Props) {
   const navigate = useNavigate();
   const { t, lang, setLang } = useTranslation();
@@ -582,7 +589,7 @@ export function SettingsPage({ onClose }: Props) {
         <h3 className="text-lg font-medium text-cream">{t.settings_language}</h3>
 
         <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-          {SUPPORTED_LANGUAGES.map((code) => (
+          {VISIBLE_LANGS.map((code) => (
             <button
               key={code}
               onClick={() => handleLanguageChange(code)}
@@ -886,7 +893,7 @@ export function SettingsPage({ onClose }: Props) {
           <div className="space-y-2">
             <label className="text-xs font-medium text-cream-muted">{t.settings_second_language}</label>
             <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-              {SUPPORTED_LANGUAGES.map((code) => (
+              {VISIBLE_LANGS.map((code) => (
                 <button
                   key={code}
                   type="button"
