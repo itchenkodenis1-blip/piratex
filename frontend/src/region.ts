@@ -31,7 +31,7 @@ const REGION_CONFIGS: Record<Region, RegionConfig> = {
     region: "ru",
     brand: "ВидеоРентген",
     legalEntity: "ИП Итченко Денис Александрович",
-    legalDetails: "ОГРНИП [впиши номер] · ИНН [впиши номер]",
+    legalDetails: "ОГРНИП 324645700010538 · ИНН 645319991460",
     legalAddress: "[впиши адрес регистрации]",
     termsUrl: "/terms-ru",
     privacyUrl: "/privacy-ru",
