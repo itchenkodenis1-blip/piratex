@@ -16,8 +16,8 @@ export const en: Translations = {
   nav_logout: "Log out",
 
   // Home page
-  home_title: "Analyze a reel",
-  home_subtitle: "Paste a link and get frame-by-frame breakdown, transcription, and a ready-made script for adaptation",
+  home_title: "Your reels don't take off?",
+  home_subtitle: "Frame-by-frame any viral reel — hook, retention structure, drop-off points — and get a ready-made script for your niche. In minutes.",
   home_new_analysis: "New analysis",
   home_try_again: "Try again",
   home_error_fetch: "Failed to fetch results",
@@ -531,17 +531,17 @@ export const en: Translations = {
   home_step_script: "Ready script",
 
   home_benefits_title: "What you get from one analysis",
-  home_feat_hooks_t: "Hook breakdown",
-  home_feat_hooks_d: "First seconds frame by frame: what grabs attention and why viewers stay",
-  home_feat_struct_t: "Video skeleton",
-  home_feat_struct_d: "How retention is built from first frame to finale, second by second",
-  home_feat_retain_t: "Drop-off points",
-  home_feat_retain_d: "Where viewers leave and what viral reels do about it",
-  home_feat_script_t: "Adaptation script",
-  home_feat_script_d: "Ready-to-use text for your niche — plug in your details and shoot",
+  home_feat_hooks_t: "The hook decides in 3 seconds",
+  home_feat_hooks_d: "See frame by frame what makes their first second work — and repeat it in yours.",
+  home_feat_struct_t: "Skeleton of a viral reel",
+  home_feat_struct_d: "How retention is built from first frame to finale, second by second — no guessing.",
+  home_feat_retain_t: "Where viewers bail",
+  home_feat_retain_d: "Spot the exact second even viral creators lose attention — and how they win it back.",
+  home_feat_script_t: "A script, not lecture notes",
+  home_feat_script_d: "Plug in your details and shoot. Zero theory — just working text for your niche.",
   home_cta_title: "First analyses are free",
-  home_cta_sub: "No sign-up, no card. Paste a link — results in minutes.",
-  home_cta_btn: "Analyze a reel for free",
+  home_cta_sub: "No card, no sign-up. Paste a viral reel link — breakdown in minutes.",
+  home_cta_btn: "Test your reel",
 
   // AI Refine
   refine_improve: "Improve",

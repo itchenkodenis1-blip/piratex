@@ -30,9 +30,9 @@ const REGION_CONFIGS: Record<Region, RegionConfig> = {
   ru: {
     region: "ru",
     brand: "ВидеоРентген",
-    legalEntity: "Видеорентген",
-    legalDetails: "самозанятый · support@videorentgen.ru",
-    legalAddress: "",
+    legalEntity: "ИП Итченко Денис Александрович",
+    legalDetails: "ОГРНИП [впиши номер] · ИНН [впиши номер]",
+    legalAddress: "[впиши адрес регистрации]",
     termsUrl: "/terms-ru",
     privacyUrl: "/privacy-ru",
     refundUrl: "/refund-ru",

@@ -44,7 +44,7 @@ const DATE_RANGES = [
 
 const SORT_OPTIONS = [
   { value: "hot_score", label: "Hot Score" },
-  { value: "x_factor", label: "X-Factor" },
+  { value: "x_factor", label: "Виральность" },
   { value: "views", label: "Просмотры" },
   { value: "recent", label: "Новые" },
 ];
@@ -379,7 +379,7 @@ function TrendCard({
         {reel.x_factor != null && (
           <div className="absolute top-2 left-2 bg-amber-500/90 backdrop-blur-sm rounded-lg px-2 py-1">
             <span className="text-xs font-mono font-bold text-black">
-              ×{reel.x_factor.toFixed(1)}
+              {reel.x_factor.toFixed(1)}×
             </span>
           </div>
         )}

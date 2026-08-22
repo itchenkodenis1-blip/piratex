@@ -1,0 +1,17 @@
+services:
+  web:
+    ports: !override
+      - "8001:8000"
+    environment: !override
+      - STORAGE_DIR=/data/storage
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/piratex
+  worker:
+    environment: !override
+      - STORAGE_DIR=/data/storage
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/piratex
+  redis:
+    ports: !override []
+  db:
+    ports: !override []

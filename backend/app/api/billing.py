@@ -73,7 +73,7 @@ TIER_FEATURES_TEMPLATES: dict[str, dict[str, list[dict[str, str]]]] = {
     "START": {
         "ru": [
             {"text": "{limit} сценариев в месяц", "style": "highlight"},
-            {"text": "от 40₽ за сценарий", "style": "highlight"},
+            {"text": "от 38₽ за сценарий", "style": "highlight"},
             {"text": "Полный разбор: хуки, структура, приёмы", "style": "normal"},
             {"text": "Готовый сценарий — бери и снимай", "style": "normal"},
             {"text": "Раздел «Что снимать» + подборка под ваши темы", "style": "normal"},
