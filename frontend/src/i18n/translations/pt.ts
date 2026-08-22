@@ -729,10 +729,10 @@ export const pt: Translations = {
 
   // Terms of Service (17 sections)
   terms_title: "Termos de Servico",
-  terms_intro: "Este documento constitui uma oferta publica da {entity} ({details}), endereco: {address} (a \"Empresa\"), para a celebracao de um contrato de servicos da plataforma {brand} (o \"Contrato\") nas condicoes abaixo.",
+  terms_intro: "Este documento constitui uma oferta publica da {entity} ({details}) (a \"Empresa\"), para a celebracao de um contrato de servicos da plataforma {brand} (o \"Contrato\") nas condicoes abaixo.",
 
   terms_definitions_title: "1. Definicoes",
-  terms_definitions_text: "1.1. Servico — a plataforma cloud {brand} disponivel em https://viralex.ai.\n\n1.2. Usuario — pessoa fisica que aceitou esta oferta.\n\n1.3. Empresa — {entity} ({details}), endereco: {address}.\n\n1.4. Conta — secao pessoal do Usuario no Servico.\n\n1.5. Plano — conjunto de funcionalidades e limites, pago ou gratuito.\n\n1.6. Assinatura — periodo de acesso pago com possibilidade de renovacao automatica.",
+  terms_definitions_text: "1.1. Servico — a plataforma cloud {brand} disponivel em https://viralex.ai.\n\n1.2. Usuario — pessoa fisica que aceitou esta oferta.\n\n1.3. Empresa — {entity} ({details}).\n\n1.4. Conta — secao pessoal do Usuario no Servico.\n\n1.5. Plano — conjunto de funcionalidades e limites, pago ou gratuito.\n\n1.6. Assinatura — periodo de acesso pago com possibilidade de renovacao automatica.",
 
   terms_subject_title: "2. Objeto do contrato",
   terms_subject_text: "2.1. A Empresa fornece ao Usuario acesso ao Servico — uma plataforma de analise de conteudo de video usando inteligencia artificial.\n\n2.2. O escopo das funcionalidades depende do Plano escolhido.\n\n2.3. A Empresa pode modificar as funcionalidades do Servico sem acordo previo do Usuario.",
@@ -780,11 +780,11 @@ export const pt: Translations = {
   terms_forcemajeure_text: "16.1. Nenhuma parte e responsavel pelo descumprimento de obrigacoes devido a forca maior: desastres naturais, acoes governamentais, perturbacoes em redes de comunicacao.\n\n16.2. A parte afetada notifica a outra em prazo razoavel.",
 
   terms_contact_title: "17. Dados da Empresa",
-  terms_contact_text: "{entity}\n{details}\nEndereco: {address}\nE-mail: {email}",
+  terms_contact_text: "{entity}\n{details}\nE-mail: {email}",
 
   // Privacy Policy
   privacy_title: "Politica de Privacidade",
-  privacy_intro: "{entity} ({details}), endereco: {address} (a \"Empresa\"), processa dados pessoais dos usuarios do {brand} em conformidade com o RGPD e leis aplicaveis.",
+  privacy_intro: "{entity} ({details}) (a \"Empresa\"), processa dados pessoais dos usuarios do {brand} em conformidade com o RGPD e leis aplicaveis.",
   privacy_data_title: "1. Dados processados",
   privacy_data_text: "Ao usar o Servico, podemos processar:\n— Nome e endereco de e-mail\n— Identificadores obtidos via servicos de autenticacao de terceiros\n— Dados de uso (funcionalidades, configuracoes)\n— Dados tecnicos (endereco IP, tipo de navegador, cookies)\n— Dados de pagamento (processados pelo provedor de pagamento; nao armazenamos dados de cartao)",
   privacy_purposes_title: "2. Finalidades do processamento",
@@ -802,7 +802,7 @@ export const pt: Translations = {
   privacy_changes_title: "8. Alteracoes",
   privacy_changes_text: "A Empresa pode atualizar esta Politica. A versao atual esta disponivel em https://viralex.ai/privacy.",
   privacy_contact_title: "9. Contato",
-  privacy_contact_text: "{entity}\n{details}\nEndereco: {address}\nE-mail: {email}",
+  privacy_contact_text: "{entity}\n{details}\nE-mail: {email}",
 
   // Cookie Policy
   cookie_policy_title: "Politica de cookies",

@@ -779,7 +779,7 @@ export const fr: Translations = {
   terms_forcemajeure_text: "16.1. Aucune partie n'est responsable de l'inexecution de ses obligations en raison de circonstances de force majeure : catastrophes naturelles, actes de gouvernement, perturbations majeures des reseaux.\n\n16.2. La partie affectee en informe l'autre dans un delai raisonnable.",
 
   terms_contact_title: "17. Coordonnees",
-  terms_contact_text: "{entity}\n{details}\nAdresse : {address}\nE-mail : {email}",
+  terms_contact_text: "{entity}\n{details}\nE-mail : {email}",
 
   // Privacy Policy
   privacy_title: "Politique de confidentialite",
@@ -801,7 +801,7 @@ export const fr: Translations = {
   privacy_changes_title: "8. Modifications",
   privacy_changes_text: "La Societe peut mettre a jour cette Politique. La version actuelle est disponible sur https://viralex.ai/privacy.",
   privacy_contact_title: "9. Contact",
-  privacy_contact_text: "Pour toute question sur le traitement des donnees :\n\n{entity}\n{details}\nAdresse : {address}\nE-mail : {email}",
+  privacy_contact_text: "Pour toute question sur le traitement des donnees :\n\n{entity}\n{details}\nE-mail : {email}",
 
   // Cookie Policy
   cookie_policy_title: "Politique des cookies",
