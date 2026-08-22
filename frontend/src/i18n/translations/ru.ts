@@ -269,7 +269,7 @@ export const ru: Translations = {
   shared_page_not_found: "Результат не найден или ещё в обработке",
   shared_page_loading: "Загрузка...",
   shared_page_cta: "Создавайте адаптации залетевших рилсов за минуты",
-  shared_page_try_piratex: "Попробовать Piratex.ai",
+  shared_page_try_piratex: "Попробовать ВидеоРентген",
   shared_page_original_reel: "Оригинальный рилс",
   shared_page_keyframes: "Раскадровка",
   shared_page_open_reference: "Открыть референс",
