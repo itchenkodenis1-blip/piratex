@@ -13,7 +13,7 @@ function XBadge({ value }: { value: number | null }) {
   else if (value >= 2) color = "bg-amber-500/25 text-amber-400 ring-1 ring-amber-500/40";
   return (
     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold backdrop-blur-sm ${color}`}>
-      {value.toFixed(1)}x
+      {value.toFixed(1)}×
     </span>
   );
 }

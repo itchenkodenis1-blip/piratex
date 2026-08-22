@@ -310,6 +310,7 @@ export const ru: Translations = {
   trends_no_niches_found: "Ничего не найдено",
   trends_all_platforms: "Все",
   trends_sort_hot_score: "Горячее",
+  trends_sort_x_factor: "Виральность",
   trends_sort_views: "Просмотры",
   trends_sort_recent: "Свежие",
   trends_parse: "Разобрать",

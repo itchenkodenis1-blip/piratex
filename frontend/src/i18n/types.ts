@@ -300,6 +300,7 @@ export interface Translations {
   trends_no_niches_found: string;
   trends_all_platforms: string;
   trends_sort_hot_score: string;
+    trends_sort_x_factor: string;
   trends_sort_views: string;
   trends_sort_recent: string;
   trends_parse: string;

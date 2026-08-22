@@ -1002,7 +1002,7 @@ export function SettingsPage({ onClose }: Props) {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-cream">{t.settings_radar_min_x}</label>
-                  <span className="text-sm font-mono text-cream-dim">X{profile.radar_min_x_factor ?? 3.0}</span>
+                  <span className="text-sm font-mono text-cream-dim">×{profile.radar_min_x_factor ?? 3.0}</span>
                 </div>
                 <input
                   type="range"

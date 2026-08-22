@@ -395,7 +395,7 @@ export function TrendsPage({ user, onLoginClick, onOpenOnboarding }: TrendsPageP
                       : "text-cream-muted hover:text-cream"
                 }`}
               >
-                {s === "hot_score" ? t.trends_sort_hot_score : s === "x_factor" ? "X-factor" : s === "views" ? t.trends_sort_views : t.trends_sort_recent}
+                {s === "hot_score" ? t.trends_sort_hot_score : s === "x_factor" ? t.trends_sort_x_factor : s === "views" ? t.trends_sort_views : t.trends_sort_recent}
               </button>
             ))}
           </div>

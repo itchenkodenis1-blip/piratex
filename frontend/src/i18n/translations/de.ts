@@ -293,6 +293,7 @@ export const de: Translations = {
   trends_no_niches_found: "Nichts gefunden",
   trends_all_platforms: "Alle",
   trends_sort_hot_score: "Trend",
+  trends_sort_x_factor: "Viralität",
   trends_sort_views: "Aufrufe",
   trends_sort_recent: "Neueste",
   trends_parse: "Analysieren",
