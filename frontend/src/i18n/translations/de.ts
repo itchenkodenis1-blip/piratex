@@ -745,10 +745,10 @@ export const de: Translations = {
 
   // Terms of Service (17 sections)
   terms_title: "Nutzungsbedingungen",
-  terms_intro: "Dieses Dokument stellt ein oeffentliches Angebot der {entity} ({details}), Adresse: {address} (das \"Unternehmen\") zum Abschluss eines Dienstleistungsvertrags fuer die Plattform {brand} (der \"Vertrag\") zu den nachstehenden Bedingungen dar.",
+  terms_intro: "Dieses Dokument stellt ein oeffentliches Angebot der {entity} ({details}) (das \"Unternehmen\") zum Abschluss eines Dienstleistungsvertrags fuer die Plattform {brand} (der \"Vertrag\") zu den nachstehenden Bedingungen dar.",
 
   terms_definitions_title: "1. Begriffsbestimmungen",
-  terms_definitions_text: "1.1. Dienst — die Cloud-Plattform {brand}, erreichbar unter https://viralex.ai.\n\n1.2. Nutzer — eine natuerliche Person, die dieses Angebot angenommen hat.\n\n1.3. Unternehmen — {entity} ({details}), Adresse: {address}.\n\n1.4. Konto — der persoenliche Bereich des Nutzers im Dienst.\n\n1.5. Plan — ein Paket von Funktionen und Limits, kostenpflichtig oder kostenlos.\n\n1.6. Abonnement — ein bezahlter Zugangszeitraum mit Moeglichkeit der automatischen Verlaengerung.",
+  terms_definitions_text: "1.1. Dienst — die Cloud-Plattform {brand}, erreichbar unter https://viralex.ai.\n\n1.2. Nutzer — eine natuerliche Person, die dieses Angebot angenommen hat.\n\n1.3. Unternehmen — {entity} ({details}).\n\n1.4. Konto — der persoenliche Bereich des Nutzers im Dienst.\n\n1.5. Plan — ein Paket von Funktionen und Limits, kostenpflichtig oder kostenlos.\n\n1.6. Abonnement — ein bezahlter Zugangszeitraum mit Moeglichkeit der automatischen Verlaengerung.",
 
   terms_subject_title: "2. Vertragsgegenstand",
   terms_subject_text: "2.1. Das Unternehmen gewaehrt dem Nutzer Zugang zum Dienst — einer Online-Plattform zur Videoanalyse mittels kuenstlicher Intelligenz.\n\n2.2. Der Funktionsumfang richtet sich nach dem gewaehlten Plan.\n\n2.3. Das Unternehmen kann die Funktionalitaet des Dienstes ohne vorherige Zustimmung des Nutzers aendern.",
@@ -796,11 +796,11 @@ export const de: Translations = {
   terms_forcemajeure_text: "16.1. Keine Partei haftet fuer die Nichterfuellung von Verpflichtungen aufgrund hoeherer Gewalt: Naturkatastrophen, behoerdliche Massnahmen, groessere Stoerungen der Kommunikationsnetze.\n\n16.2. Die betroffene Partei informiert die andere Partei in angemessener Frist.",
 
   terms_contact_title: "17. Unternehmensdaten",
-  terms_contact_text: "{entity}\n{details}\nAdresse: {address}\nE-Mail: {email}",
+  terms_contact_text: "{entity}\n{details}\nE-Mail: {email}",
 
   // Privacy Policy
   privacy_title: "Datenschutzrichtlinie",
-  privacy_intro: "{entity} ({details}), Adresse: {address} (das \"Unternehmen\"), verarbeitet personenbezogene Daten der Nutzer von {brand} in Uebereinstimmung mit der DSGVO und den geltenden Datenschutzgesetzen.",
+  privacy_intro: "{entity} ({details}) (das \"Unternehmen\"), verarbeitet personenbezogene Daten der Nutzer von {brand} in Uebereinstimmung mit der DSGVO und den geltenden Datenschutzgesetzen.",
   privacy_data_title: "1. Verarbeitete Daten",
   privacy_data_text: "Bei der Nutzung des Dienstes koennen wir verarbeiten:\n— Name und E-Mail-Adresse\n— Identifikatoren aus Drittanbieter-Authentifizierungsdiensten\n— Nutzungsdaten (Funktionen, Einstellungen)\n— Technische Daten (IP-Adresse, Browsertyp, Cookies)\n— Zahlungsdaten (verarbeitet durch den Zahlungsanbieter; wir speichern keine Kartendaten)",
   privacy_purposes_title: "2. Zwecke der Verarbeitung",
@@ -818,7 +818,7 @@ export const de: Translations = {
   privacy_changes_title: "8. Aenderungen",
   privacy_changes_text: "Das Unternehmen kann diese Richtlinie aktualisieren. Die aktuelle Fassung ist unter https://viralex.ai/privacy verfuegbar.",
   privacy_contact_title: "9. Kontakt",
-  privacy_contact_text: "{entity}\n{details}\nAdresse: {address}\nE-Mail: {email}",
+  privacy_contact_text: "{entity}\n{details}\nE-Mail: {email}",
 
   // Meta disclaimer (RU only)
   footer_meta_disclaimer: "",

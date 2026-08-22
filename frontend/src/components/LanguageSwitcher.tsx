@@ -41,7 +41,9 @@ export function LanguageSwitcher() {
         className="flex items-center gap-1.5 px-2 py-2.5 text-sm text-cream-muted hover:text-cream rounded-lg transition-colors"
       >
         <span>{LANGUAGE_FLAGS[lang]}</span>
-        <span className="uppercase text-xs font-medium">{lang}</span>
+        <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M5 8l5 5 5-5" />
+        </svg>
       </button>
 
       {open && (

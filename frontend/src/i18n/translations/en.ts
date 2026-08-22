@@ -746,10 +746,10 @@ export const en: Translations = {
 
   // Terms of Service (17 sections)
   terms_title: "Terms of Service",
-  terms_intro: "This document constitutes a public offer by {entity} ({details}), address: {address} (the \"Company\"), to enter into a service agreement for the {brand} platform (the \"Agreement\") on the terms set out below.",
+  terms_intro: "This document constitutes a public offer by {entity} ({details}) (the \"Company\"), to enter into a service agreement for the {brand} platform (the \"Agreement\") on the terms set out below.",
 
   terms_definitions_title: "1. Definitions",
-  terms_definitions_text: "1.1. Service — the {brand} cloud platform available at https://viralex.ai.\n\n1.2. User — an individual who has accepted this offer.\n\n1.3. Company — {entity} ({details}), address: {address}.\n\n1.4. Account — the User's personal section within the Service, accessible after authorization.\n\n1.5. Plan — a set of features and limits available to the User, whether paid or free.\n\n1.6. Subscription — a paid access period to a Plan with the option of automatic renewal.",
+  terms_definitions_text: "1.1. Service — the {brand} cloud platform available at https://viralex.ai.\n\n1.2. User — an individual who has accepted this offer.\n\n1.3. Company — {entity} ({details}).\n\n1.4. Account — the User's personal section within the Service, accessible after authorization.\n\n1.5. Plan — a set of features and limits available to the User, whether paid or free.\n\n1.6. Subscription — a paid access period to a Plan with the option of automatic renewal.",
 
   terms_subject_title: "2. Subject of the Agreement",
   terms_subject_text: "2.1. The Company provides the User with access to the Service — an online platform for video content analysis using artificial intelligence.\n\n2.2. The scope of available features is determined by the selected Plan.\n\n2.3. The Company may modify the Service functionality without prior notice to the User.",
@@ -797,11 +797,11 @@ export const en: Translations = {
   terms_forcemajeure_text: "16.1. Neither party is liable for failure to perform obligations due to force majeure: natural disasters, government actions, or major disruptions to communications and internet infrastructure.\n\n16.2. The affected party shall notify the other party within a reasonable time.",
 
   terms_contact_title: "17. Company Details",
-  terms_contact_text: "{entity}\n{details}\nAddress: {address}\nEmail: {email}\n\nRegistered in Portugal.",
+  terms_contact_text: "{entity}\n{details}\nEmail: {email}\n\nRegistered in Portugal.",
 
   // Privacy Policy
   privacy_title: "Privacy Policy",
-  privacy_intro: "{entity} ({details}), address: {address} (the \"Company\"), processes personal data of {brand} users in accordance with the General Data Protection Regulation (GDPR) and Portuguese data protection law.",
+  privacy_intro: "{entity} ({details}) (the \"Company\"), processes personal data of {brand} users in accordance with the General Data Protection Regulation (GDPR) and Portuguese data protection law.",
   privacy_data_title: "1. Data We Process",
   privacy_data_text: "When using the Service, we may process:\n— Name and email address\n— Identifiers obtained through third-party authentication\n— Usage data (features, settings)\n— Technical data (IP address, browser type, cookies)\n— Payment data (processed by the payment provider; we do not store card details)",
   privacy_purposes_title: "2. Purposes of Processing",
@@ -819,7 +819,7 @@ export const en: Translations = {
   privacy_changes_title: "8. Changes to This Policy",
   privacy_changes_text: "The Company may update this Policy. The current version is available at https://viralex.ai/privacy.",
   privacy_contact_title: "9. Contact",
-  privacy_contact_text: "{entity}\n{details}\nAddress: {address}\nEmail: {email}",
+  privacy_contact_text: "{entity}\n{details}\nEmail: {email}",
 
   // Cookie Policy
   cookie_policy_title: "Cookie Policy",

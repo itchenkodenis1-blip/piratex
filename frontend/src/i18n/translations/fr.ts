@@ -728,10 +728,10 @@ export const fr: Translations = {
 
   // Terms of Service (17 sections)
   terms_title: "Conditions d'utilisation",
-  terms_intro: "Le present document constitue une offre publique de {entity} ({details}), adresse : {address} (la « Societe »), pour la conclusion d'un contrat de services de la plateforme {brand} (le « Contrat ») aux conditions ci-dessous.",
+  terms_intro: "Le present document constitue une offre publique de {entity} ({details}) (la « Societe »), pour la conclusion d'un contrat de services de la plateforme {brand} (le « Contrat ») aux conditions ci-dessous.",
 
   terms_definitions_title: "1. Definitions",
-  terms_definitions_text: "1.1. Service — la plateforme cloud {brand} accessible a l'adresse https://viralex.ai.\n\n1.2. Utilisateur — toute personne physique ayant accepte la presente offre.\n\n1.3. Societe — {entity} ({details}), adresse : {address}.\n\n1.4. Compte — l'espace personnel de l'Utilisateur dans le Service.\n\n1.5. Plan — un ensemble de fonctionnalites et de limites, payant ou gratuit.\n\n1.6. Abonnement — une periode d'acces payante avec possibilite de renouvellement automatique.",
+  terms_definitions_text: "1.1. Service — la plateforme cloud {brand} accessible a l'adresse https://viralex.ai.\n\n1.2. Utilisateur — toute personne physique ayant accepte la presente offre.\n\n1.3. Societe — {entity} ({details}).\n\n1.4. Compte — l'espace personnel de l'Utilisateur dans le Service.\n\n1.5. Plan — un ensemble de fonctionnalites et de limites, payant ou gratuit.\n\n1.6. Abonnement — une periode d'acces payante avec possibilite de renouvellement automatique.",
 
   terms_subject_title: "2. Objet du contrat",
   terms_subject_text: "2.1. La Societe fournit a l'Utilisateur l'acces au Service — une plateforme d'analyse de contenu video utilisant l'intelligence artificielle.\n\n2.2. L'etendue des fonctionnalites depend du Plan choisi.\n\n2.3. La Societe peut modifier les fonctionnalites du Service sans accord prealable de l'Utilisateur.",
@@ -783,7 +783,7 @@ export const fr: Translations = {
 
   // Privacy Policy
   privacy_title: "Politique de confidentialite",
-  privacy_intro: "{entity} ({details}), adresse : {address} (la « Societe »), traite les donnees personnelles des utilisateurs de {brand} conformement au RGPD et aux lois applicables.",
+  privacy_intro: "{entity} ({details}) (la « Societe »), traite les donnees personnelles des utilisateurs de {brand} conformement au RGPD et aux lois applicables.",
   privacy_data_title: "1. Donnees traitees",
   privacy_data_text: "Lors de l'utilisation du Service, nous pouvons traiter :\n— Nom et adresse e-mail\n— Identifiants obtenus via des services d'authentification tiers\n— Donnees d'utilisation (fonctionnalites, parametres)\n— Donnees techniques (adresse IP, type de navigateur, cookies)\n— Donnees de paiement (traitees par le prestataire de paiement ; nous ne stockons pas les donnees bancaires)",
   privacy_purposes_title: "2. Finalites du traitement",
