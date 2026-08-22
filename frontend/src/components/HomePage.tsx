@@ -318,7 +318,7 @@ export function HomePage({ user, usage, refreshUser }: HomePageProps) {
                 { n: "01", label: t.home_step_link },
                 { n: "02", label: t.home_step_ai },
                 { n: "03", label: t.home_step_script },
-              ].map((s, i) => (
+              ].map((s) => (
                 <div key={s.n} className="flex items-start gap-4 sm:flex-col sm:items-center sm:text-center sm:gap-2">
                   <span className="font-serif text-4xl text-green-400/70 leading-none">{s.n}</span>
                   <div className="sm:space-y-1">
