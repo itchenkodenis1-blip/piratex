@@ -308,7 +308,7 @@ export function AuthGateModal({
 
               <div className="space-y-2.5">
                 {/* Yandex ID */}
-                {regionConfig.region === "ru" && (
+                {regionConfig.authProviders.includes("yandex") && (
                   <button
                     onClick={() => requireConsent({ type: "oauth", provider: "yandex" })}
                     disabled={!!oauthLoading}
@@ -324,7 +324,7 @@ export function AuthGateModal({
                 )}
 
                 {/* Google */}
-                {regionConfig.region !== "ru" && (
+                {regionConfig.authProviders.includes("google") && (
                   <button
                     onClick={() => requireConsent({ type: "oauth", provider: "google" })}
                     disabled={!!oauthLoading}
