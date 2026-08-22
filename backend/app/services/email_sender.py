@@ -250,6 +250,11 @@ async def send_magic_link_email(
                     }
                 },
             )
+            if resp.status_code >= 400:
+                logger.error(
+                    "[magic-link] Unisender error %s for %s: %s",
+                    resp.status_code, to_email, resp.text[:800],
+                )
             resp.raise_for_status()
         return True
     except Exception:
