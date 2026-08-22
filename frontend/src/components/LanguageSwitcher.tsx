@@ -11,11 +11,12 @@ export function LanguageSwitcher() {
 
   // On viralex.ai domain, hide Russian from the language list
   const availableLanguages = useMemo(() => {
-    if (isViralexDomain()) {
-      return SUPPORTED_LANGUAGES.filter((code) => code !== "ru");
-    }
-    return SUPPORTED_LANGUAGES;
-  }, []);
+    const base = isViralexDomain()
+      ? SUPPORTED_LANGUAGES.filter((code) => code !== "ru")
+      : SUPPORTED_LANGUAGES;
+    // Текущий язык показываем только в кнопке — в списке он дублировал сам себя
+    return base.filter((code) => code !== lang);
+  }, [lang]);
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {

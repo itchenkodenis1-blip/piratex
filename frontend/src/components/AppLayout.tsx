@@ -89,11 +89,7 @@ export function AppLayout({ user, logout, onLoginClick, children, showOnboarding
             <nav className="flex items-center gap-6">
               <button
                 onClick={() => navigate("/")}
-                className={`text-sm transition-colors ${
-                  !isTrends && !isMyVideos && !isPricing && !isSettings
-                    ? "text-cream"
-                    : "text-cream-muted hover:text-cream"
-                }`}
+                className="text-sm text-cream-dim hover:text-cream transition-colors"
               >
                 {t.nav_analysis}
               </button>
@@ -111,11 +107,7 @@ export function AppLayout({ user, logout, onLoginClick, children, showOnboarding
               )}
               <button
                 onClick={() => navigate("/trends")}
-                className={`text-sm transition-colors ${
-                  isTrends
-                    ? "text-cream"
-                    : "text-cream-muted hover:text-cream"
-                }`}
+                className="text-sm text-cream-dim hover:text-cream transition-colors"
               >
                 {t.nav_trends}
               </button>
