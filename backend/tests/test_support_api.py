@@ -27,7 +27,7 @@ async def user(db_session):
 @pytest_asyncio.fixture
 async def admin_user(db_session, monkeypatch):
     """Create an admin user and ensure settings.admin_emails includes them."""
-    email = "admin@piratex.ai"
+    email = "admin@videorentgen.ru"
     from app.config import settings
     monkeypatch.setattr(settings, "admin_emails", email)
     u = User(

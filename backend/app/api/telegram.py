@@ -255,7 +255,7 @@ async def _handle_message(request: Request, db: AsyncSession, message: dict):
 async def _cmd_start(chat_id: str, tg_username: str | None, display_name: str, user_id: str | None):
     """Welcome message with instructions."""
     text = (
-        "\U0001f44b Привет! Я бот Piratex.ai\n\n"
+        "\U0001f44b Привет! Я бот ВидеоРентген\n\n"
         "Скиньте мне ссылку на рилс — и я создам для вас:\n"
         "\U0001f4dd Сценарий для съёмки\n"
         "\U0001f4f1 Готовый пост с хештегами\n"
@@ -273,7 +273,7 @@ async def _cmd_start(chat_id: str, tg_username: str | None, display_name: str, u
 async def _cmd_help(chat_id: str, tg_username: str | None, display_name: str, user_id: str | None):
     """/help command."""
     text = (
-        "\U0001f3f4\u200d\u2620\ufe0f Что умеет Piratex Bot:\n\n"
+        "\U0001f3f4\u200d\u2620\ufe0f Что умеет ВидеоРентген Bot:\n\n"
         "\U0001f4ce Отправьте ссылку на рилс — получите сценарий, пост и анализ\n"
         "\U0001f4e1 Радар трендов — уведомления о залетевших рилсах в вашей нише\n"
         "\U0001f50d Кнопка «Разобрать» — запустить анализ прямо из уведомления\n\n"
@@ -295,8 +295,8 @@ async def _cmd_status(
     if not user:
         await _send_and_log(
             chat_id,
-            "Вы ещё не привязали аккаунт Piratex.\n\n"
-            "Перейдите на piratex.ai, авторизуйтесь и привяжите Telegram в настройках.",
+            "Вы ещё не привязали аккаунт ВидеоРентген.\n\n"
+            "Перейдите на videorentgen.ru, авторизуйтесь и привяжите Telegram в настройках.",
             tg_username=tg_username, tg_name=display_name,
         )
         return
@@ -351,12 +351,12 @@ async def _handle_url(
     if not user:
         await _send_and_log(
             chat_id,
-            "Чтобы анализировать рилсы, привяжите Telegram к аккаунту Piratex.\n\n"
-            "Перейдите на piratex.ai → Настройки → Привязать Telegram.",
+            "Чтобы анализировать рилсы, привяжите Telegram к аккаунту ВидеоРентген.\n\n"
+            "Перейдите на videorentgen.ru → Настройки → Привязать Telegram.",
             tg_username=tg_username, tg_name=display_name,
             reply_markup={
                 "inline_keyboard": [[
-                    {"text": "\U0001f310 Открыть Piratex", "url": settings.app_url},
+                    {"text": "\U0001f310 Открыть ВидеоРентген", "url": settings.app_url},
                 ]]
             },
         )
@@ -565,7 +565,7 @@ async def _cb_analyze_reel(
     if not user:
         await answer_callback_query(
             cb_id, settings.telegram_bot_token,
-            text="Привяжите аккаунт на piratex.ai",
+            text="Привяжите аккаунт на videorentgen.ru",
         )
         return
 

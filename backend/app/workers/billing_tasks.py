@@ -64,7 +64,7 @@ async def process_recurring_payments(db: AsyncSession) -> int:
                 logger.warning("No amount for subscription %s", sub.id)
                 continue
 
-            description = f"Piratex.ai {TIER_NAMES.get(charge_tier, charge_tier)} ({charge_interval}) — автопродление"
+            description = f"ВидеоРентген {TIER_NAMES.get(charge_tier, charge_tier)} ({charge_interval}) — автопродление"
 
             # Get user email for receipt
             user_result = await db.execute(select(User).where(User.id == sub.user_id))
@@ -529,7 +529,7 @@ async def _notify_user_payment_failed(user: User | None, sub: Subscription) -> N
                 "Управление подпиской",
                 f"{settings.app_url}/settings",
             )
-            await _send_email(user.email, "Piratex.ai — ошибка оплаты подписки", email_html)
+            await _send_email(user.email, "ВидеоРентген — ошибка оплаты подписки", email_html)
         except Exception:
             pass
 

@@ -1,4 +1,4 @@
-# Piratex.ai
+# ВидеоРентген (VideoRentgen)
 
 Self-hostable platform for **short-form video analysis and content production**.
 Paste an Instagram Reel / TikTok / YouTube Short URL and the app downloads it,
@@ -55,7 +55,7 @@ The easiest path. Install [Claude Code](https://www.claude.com/product/claude-co
 open this project folder, and paste this prompt:
 
 ```
-You are my deployment assistant for this Piratex.ai project. I am not a programmer.
+You are my deployment assistant for this ВидеоРентген (VideoRentgen) project. I am not a programmer.
 Guide me step by step to deploy it to production on Railway, in the language I write to you.
 
 Rules:

@@ -1,6 +1,6 @@
 # Deploy to Railway — step by step
 
-This guide deploys Piratex.ai to [Railway](https://railway.app): three services
+This guide deploys ВидеоРентген (VideoRentgen) to [Railway](https://railway.app): three services
 (**web**, **worker**, **scheduler**) from this one repository, plus managed
 **PostgreSQL** and **Redis**. Database migrations run automatically on startup —
 there is no manual migration step.

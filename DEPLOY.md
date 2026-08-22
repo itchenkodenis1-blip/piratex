@@ -1,1 +1,1 @@
-# Piratex.ai - deployed on Railway
+# ВидеоРентген (VideoRentgen) - deployed on Railway

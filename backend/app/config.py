@@ -11,7 +11,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    app_name: str = "Piratex.ai"
+    app_name: str = "ВидеоРентген"
     debug: bool = False
     storage_dir: str = "./storage"
     demo_mode: bool = False
@@ -86,7 +86,7 @@ class Settings(BaseSettings):
     failed_job_retention_days: int = 7
 
     # Models
-    whisper_model: str = "whisper-large-v3-turbo"
+    whisper_model: str = "openai/whisper-large-v3-turbo"
     vision_model: str = "openai/gpt-4o-mini"
     text_model: str = "claude-sonnet-4-6"
     light_text_model: str = "nvidia/nemotron-3.5-lightning:free"
@@ -97,7 +97,7 @@ class Settings(BaseSettings):
     telegram_bot_name: str = "go_piratex_bot"
     telegram_channel_id: str = ""
     telegram_channel_url: str = ""  # Invite link (e.g. https://t.me/+abc)
-    telegram_webhook_url: str = ""  # e.g. "https://piratex.ai"
+    telegram_webhook_url: str = ""  # e.g. "https://videorentgen.ru"
     telegram_webhook_secret: str = ""  # REQUIRED in production — webhook is rejected without it
 
     # Cloudflare Turnstile (empty = disabled, anonymous users skip captcha)
@@ -118,7 +118,7 @@ class Settings(BaseSettings):
 
     # Email (Unisender Go)
     unisender_api_key: str = ""
-    email_from_domain: str = "piratex.ai"
+    email_from_domain: str = "videorentgen.ru"
     magic_link_ttl_minutes: int = 15
 
     # Phone auth (SMS)
@@ -148,7 +148,7 @@ class Settings(BaseSettings):
     yookassa_shop_id: str = ""
     yookassa_secret_key: str = ""
     yookassa_webhook_secret: str = ""  # REQUIRED in production — webhook returns 503 without it
-    app_url: str = "https://piratex.ai"  # for return URLs
+    app_url: str = "https://videorentgen.ru"  # for return URLs
 
     # Stripe
     stripe_secret_key: str = ""

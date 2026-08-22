@@ -86,7 +86,7 @@ async def test_sends_telegram_when_user_has_tg(
          patch("app.services.support_notifier.get_db_session") as mock_db, \
          patch("app.services.support_notifier.settings") as mock_settings:
         mock_settings.telegram_bot_token = "fake-token"
-        mock_settings.app_url = "https://piratex.ai"
+        mock_settings.app_url = "https://videorentgen.ru"
         mock_redis.return_value = AsyncMock(get=AsyncMock(return_value=None), set=AsyncMock())
         mock_db.return_value.__aenter__ = AsyncMock(return_value=db_session)
         mock_db.return_value.__aexit__ = AsyncMock(return_value=False)
@@ -149,7 +149,7 @@ async def test_falls_back_to_email_when_telegram_fails(
          patch("app.services.support_notifier.get_db_session") as mock_db, \
          patch("app.services.support_notifier.settings") as mock_settings:
         mock_settings.telegram_bot_token = "fake-token"
-        mock_settings.app_url = "https://piratex.ai"
+        mock_settings.app_url = "https://videorentgen.ru"
         mock_redis.return_value = AsyncMock(get=AsyncMock(return_value=None), set=AsyncMock())
         mock_db.return_value.__aenter__ = AsyncMock(return_value=db_session)
         mock_db.return_value.__aexit__ = AsyncMock(return_value=False)

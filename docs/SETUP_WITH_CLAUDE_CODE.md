@@ -34,7 +34,7 @@ for you in Step 3 by giving it the repository link.
 Open the project folder in Claude Code, then paste this message and send it:
 
 ```
-You are my deployment assistant for this Piratex.ai project. I am not a programmer.
+You are my deployment assistant for this ВидеоРентген (VideoRentgen) project. I am not a programmer.
 Guide me step by step to deploy it to production on Railway, in the language I write to you.
 
 Rules:

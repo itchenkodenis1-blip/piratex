@@ -25,7 +25,7 @@ router = APIRouter()
 class MagicLinkRequest(BaseModel):
     email: EmailStr
     lang: str = "en"
-    brand: str = "Piratex.ai"
+    brand: str = "ВидеоРентген"
 
 
 # ---------------------------------------------------------------------------

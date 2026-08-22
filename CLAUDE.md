@@ -1,4 +1,4 @@
-# Piratex.ai — guide for Claude Code
+# ВидеоРентген (VideoRentgen) — guide for Claude Code
 
 This file tells Claude Code how to help with this project. There are two common
 audiences: people **deploying** the app (often non-programmers) and people **developing**

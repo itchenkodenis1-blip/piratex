@@ -245,8 +245,8 @@ export function AuthGateModal({
         {/* Header */}
         <div className="flex items-center justify-between px-4 sm:px-6 pt-5 pb-0">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Piratex.ai" className="h-7 w-7" />
-            <span className="text-sm font-serif font-medium text-cream">Piratex.ai</span>
+            <img src="/logo.png" alt="ВидеоРентген" className="h-7 w-7" />
+            <span className="text-sm font-serif font-medium text-cream">ВидеоРентген</span>
           </div>
           <button
             onClick={onClose}

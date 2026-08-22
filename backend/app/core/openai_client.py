@@ -34,8 +34,8 @@ def get_openai_client(api_key: str = "") -> AsyncOpenAI:
         if base_url:
             kwargs["base_url"] = base_url
             kwargs["default_headers"] = {
-                "HTTP-Referer": "https://piratex.ai",
-                "X-Title": "Piratex.ai",
+                "HTTP-Referer": "https://videorentgen.ru",
+                "X-Title": "VideoRentgen",
             }
         client = AsyncOpenAI(**kwargs)
         _chat_clients[cache_key] = client

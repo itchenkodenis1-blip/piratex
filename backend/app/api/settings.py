@@ -412,7 +412,7 @@ async def deep_analyze_instagram(
         parsing.error = "Profile has no posts to analyze"
         parsing.duration_seconds = round(_time.monotonic() - _start_time, 1)
         await db.commit()
-        raise HTTPException(400, detail="Profile has no posts to analyze")
+        raise HTTPException(400, detail="У профиля нет постов для анализа. Добавьте хотя бы несколько публикаций.")
     except ProfileGenerationError:
         parsing.status = "failed"
         parsing.error = "Failed to generate profile from analysis"

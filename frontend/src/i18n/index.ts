@@ -98,7 +98,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     document.documentElement.lang = lang;
-    const brand = window.location.hostname.includes("viralex") ? "Viralex.ai" : "Piratex.ai";
+    const brand = window.location.hostname.includes("viralex") ? "Viralex.ai" : "ВидеоРентген";
     document.title = `${brand} — ${translations.app_tagline}`;
   }, [lang, translations]);
 

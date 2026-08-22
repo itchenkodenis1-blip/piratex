@@ -19,7 +19,7 @@ from app.database import Base, async_session, engine
 from app.models import feedback, job, library, message, niches, production, promo, referral, subscription, tier_config, trends, user  # noqa: F401 — register all models
 
 app = FastAPI(
-    title="Piratex.ai",
+    title="ВидеоРентген",
     version="0.1.0",
     docs_url="/docs" if settings.debug else None,
     redoc_url="/redoc" if settings.debug else None,
@@ -93,13 +93,13 @@ if _frontend_dist.is_dir():
             f'<meta property="og:image" content="{html_lib.escape(image_url)}" />\n'
             f'<meta property="og:url" content="{html_lib.escape(page_url)}" />\n'
             f'<meta property="og:type" content="website" />\n'
-            f'<meta property="og:site_name" content="Piratex.ai" />\n'
+            f'<meta property="og:site_name" content="ВидеоРентген" />\n'
             f'<meta property="og:locale" content="ru_RU" />\n'
             f'<meta name="twitter:card" content="summary_large_image" />\n'
             f'<meta name="twitter:title" content="{t}" />\n'
             f'<meta name="twitter:description" content="{d}" />\n'
             f'<meta name="twitter:image" content="{html_lib.escape(image_url)}" />\n'
-            f'<title>{t} — Piratex.ai</title>\n'
+            f'<title>{t} — ВидеоРентген</title>\n'
         )
         # Replace existing <title> and inject OG tags
         import re

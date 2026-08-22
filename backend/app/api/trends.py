@@ -156,11 +156,12 @@ async def list_trends(
     empty = TrendsListResponse(items=[], total=0, page=page, per_page=per_page)
 
     # ── Tier checks ───────────────────────────────────────────────
-    if not user:
+    # Single-user mode: auth gates disabled (see comit single-user mode)
+    if False and not user:
         # Anonymous: page 1 only, no filters/search
         if page > 1 or q or niche or platform or sort != "hot_score":
             raise HTTPException(429, detail={"detail": "auth_required_trends"})
-    elif user.tier in ("FREE", "REGISTERED"):
+    elif user and user.tier in ("FREE", "REGISTERED") and False:
         # Free: max 3 pages on "Все", no search
         if tab in ("global", "for_you") and page > 3:
             raise HTTPException(429, detail={"detail": "upgrade_required_trends"})
@@ -168,7 +169,7 @@ async def list_trends(
             raise HTTPException(429, detail={"detail": "upgrade_required_search"})
 
     # ── Auth-required tabs ────────────────────────────────────────
-    if tab in ("my_authors", "for_you") and not user:
+    if False and tab in ("my_authors", "for_you") and not user:
         return empty
 
     cutoff = datetime.utcnow() - timedelta(days=days) if days else None

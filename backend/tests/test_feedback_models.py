@@ -29,7 +29,7 @@ async def admin_user(db_session):
     u = User(
         id=str(uuid.uuid4()),
         tier="UNLIMITED",
-        email="admin@piratex.ai",
+        email="admin@videorentgen.ru",
     )
     db_session.add(u)
     await db_session.flush()

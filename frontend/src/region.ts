@@ -29,7 +29,7 @@ export interface RegionConfig {
 const REGION_CONFIGS: Record<Region, RegionConfig> = {
   ru: {
     region: "ru",
-    brand: "Piratex.ai",
+    brand: "ВидеоРентген",
     legalEntity: "Your Company",
     legalDetails: "Your registration / tax ID",
     legalAddress: "Your registered address",
@@ -68,7 +68,7 @@ const REGION_CONFIGS: Record<Region, RegionConfig> = {
 /**
  * Region is determined by DOMAIN, not by language.
  * - viralex.ai → "int" (always, regardless of language)
- * - piratex.ai / localhost / anything else → "ru" (always, regardless of language)
+ * - videorentgen.ru / localhost / anything else → "ru" (always, regardless of language)
  */
 export function isViralexDomain(): boolean {
   return window.location.hostname.includes("viralex");

@@ -2010,7 +2010,7 @@ export function ShowcaseDashboard() {
       {/* Top bar */}
       <div className="flex items-center justify-between px-8 pt-6 pb-4">
         <div className="flex items-center gap-3">
-          <span className="font-serif text-xl tracking-tight text-cream">Piratex.ai</span>
+          <span className="font-serif text-xl tracking-tight text-cream">ВидеоРентген</span>
           <span
             className="text-[10px] uppercase tracking-[0.2em] text-cream-muted border border-border-subtle rounded-full px-2.5 py-0.5 cursor-default select-none"
             onDoubleClick={handleResetBaseline}

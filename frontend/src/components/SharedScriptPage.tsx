@@ -120,8 +120,8 @@ export function SharedScriptPage() {
       {/* Header */}
       <header className="border-b border-border-subtle px-4 sm:px-6 md:px-8 py-3 sm:py-5">
         <a href="/" className="flex items-center gap-2 text-lg font-serif font-medium text-cream hover:text-cream-dim transition-colors">
-          <img src="/logo.png" alt="Piratex.ai" className="h-7 w-7" />
-          Piratex.ai
+          <img src="/logo.png" alt="ВидеоРентген" className="h-7 w-7" />
+          ВидеоРентген
         </a>
       </header>
 
@@ -202,7 +202,7 @@ export function SharedScriptPage() {
                 Хотите такой же разбор для своего рилса?
               </h3>
               <p className="text-sm text-cream-dim max-w-md mx-auto">
-                Piratex.ai анализирует вирусные рилсы и создаёт готовые сценарии адаптации.
+                ВидеоРентген анализирует вирусные рилсы и создаёт готовые сценарии адаптации.
                 Попробуйте бесплатно — без регистрации.
               </p>
               <a
@@ -226,7 +226,7 @@ export function SharedScriptPage() {
             href="/"
             className="inline-flex items-center gap-2 px-5 py-2 bg-cream text-[#0C0C0C] hover:bg-cream-dim text-sm font-medium rounded-full transition-colors"
           >
-            Сделано в Piratex.ai — попробуйте бесплатно
+            Сделано в ВидеоРентген — попробуйте бесплатно
           </a>
         </div>
       )}

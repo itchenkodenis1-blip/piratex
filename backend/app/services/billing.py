@@ -199,7 +199,7 @@ async def create_checkout(
             raise ValueError(f"promo:{error}")
         amount_minor = calculate_discounted_amount(amount_minor, promo)
 
-    brand = "Piratex.ai" if provider_name == "yookassa" else "Viralex.ai"
+    brand = "ВидеоРентген" if provider_name == "yookassa" else "Viralex.ai"
     description = f"{brand} {TIER_NAMES.get(tier, tier)} ({interval})"
     if promo:
         description += f" (promo {promo.code})"
@@ -666,7 +666,7 @@ async def handle_payment_succeeded(
             currency=event.currency,
             status="succeeded",
             payment_method=event.payment_method,
-            description=f"Piratex.ai {tier} ({interval})",
+            description=f"ВидеоРентген {tier} ({interval})",
             paid_at=datetime.utcnow(),
         )
         db.add(payment)

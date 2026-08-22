@@ -175,7 +175,7 @@ def format_metrics_digest(metrics: dict) -> str:
         fail_rate = f" ({pct}% ошибок)"
 
     text = (
-        f"Piratex.ai — Дайджест {date_str}\n"
+        f"ВидеоРентген — Дайджест {date_str}\n"
         f"{'=' * 30}\n\n"
         f"Пользователи:\n"
         f"  Новые (24ч): {metrics['new_registrations']}\n"

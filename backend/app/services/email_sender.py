@@ -17,7 +17,7 @@ def _is_seed_recipient(to_email: str) -> bool:
     return addr.endswith("@piratex.local") or addr.startswith("seed-")
 
 
-async def _send_email(to_email: str, subject: str, html: str, brand: str = "Piratex.ai") -> bool:
+async def _send_email(to_email: str, subject: str, html: str, brand: str = "ВидеоРентген") -> bool:
     """Send an email via Unisender Go. Returns True on success."""
     # Hard guard: never deliver to seed/demo accounts
     if _is_seed_recipient(to_email):
@@ -54,7 +54,7 @@ async def _send_email(to_email: str, subject: str, html: str, brand: str = "Pira
         return False
 
 
-def _billing_email_html(title: str, body_lines: list[str], button_text: str | None = None, button_url: str | None = None, brand: str = "Piratex.ai") -> str:
+def _billing_email_html(title: str, body_lines: list[str], button_text: str | None = None, button_url: str | None = None, brand: str = "ВидеоРентген") -> str:
     """Generate a styled billing email HTML."""
     body_html = "".join(
         f"<p style='margin:0 0 12px;font-size:15px;color:#374151;line-height:1.6'>{line}</p>"
@@ -81,7 +81,7 @@ def _billing_email_html(title: str, body_lines: list[str], button_text: str | No
         "<tr><td align='center'>"
         "<table width='480' cellpadding='0' cellspacing='0' style='background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08)'>"
         "<tr><td style='padding:40px 40px 0;text-align:center'>"
-        f"<img src='https://piratex.ai/logo.png' alt='{brand}' width='140' style='margin-bottom:24px'>"
+        f"<img src='https://videorentgen.ru/logo.png' alt='{brand}' width='140' style='margin-bottom:24px'>"
         "</td></tr>"
         "<tr><td style='padding:24px 40px 0;text-align:center'>"
         f"<h1 style='margin:0 0 16px;font-size:22px;font-weight:700;color:#1a1a1a'>{title}</h1>"
@@ -172,7 +172,7 @@ async def send_magic_link_email(
     magic_link_url: str,
     pin: str = "",
     lang: str = "en",
-    brand: str = "Piratex.ai",
+    brand: str = "ВидеоРентген",
 ) -> bool:
     """Send a magic-link email via Unisender Go. Falls back to logging in dev."""
     if not settings.unisender_api_key:
@@ -206,7 +206,7 @@ async def send_magic_link_email(
         "<tr><td align='center'>"
         "<table width='480' cellpadding='0' cellspacing='0' style='background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08)'>"
         "<tr><td style='padding:40px 40px 0;text-align:center'>"
-        f"<img src='https://piratex.ai/logo.png' alt='{brand}' width='140' style='margin-bottom:24px'>"
+        f"<img src='https://videorentgen.ru/logo.png' alt='{brand}' width='140' style='margin-bottom:24px'>"
         "</td></tr>"
         "<tr><td style='padding:24px 40px 0;text-align:center'>"
         f"<h1 style='margin:0 0 8px;font-size:22px;font-weight:700;color:#1a1a1a'>{s['title']}</h1>"
@@ -259,27 +259,27 @@ async def send_magic_link_email(
 
 SUPPORT_REPLY_STRINGS: dict[str, dict[str, str]] = {
     "ru": {
-        "subject": "Piratex — вам ответили из поддержки",
+        "subject": "ВидеоРентген — вам ответили из поддержки",
         "title": "Ответ от поддержки",
         "button": "Открыть чат",
     },
     "en": {
-        "subject": "Piratex — you have a reply from support",
+        "subject": "VideoRentgen — you have a reply from support",
         "title": "Reply from support",
         "button": "Open chat",
     },
     "fr": {
-        "subject": "Piratex — réponse du support",
+        "subject": "VideoRentgen — réponse du support",
         "title": "Réponse du support",
         "button": "Ouvrir le chat",
     },
     "pt": {
-        "subject": "Piratex — resposta do suporte",
+        "subject": "VideoRentgen — resposta do suporte",
         "title": "Resposta do suporte",
         "button": "Abrir chat",
     },
     "de": {
-        "subject": "Piratex — Antwort vom Support",
+        "subject": "VideoRentgen — Antwort vom Support",
         "title": "Antwort vom Support",
         "button": "Chat öffnen",
     },
@@ -315,7 +315,7 @@ async def send_renewal_reminder_email(
     amount = html.escape(amount)
     charge_date = html.escape(charge_date)
     if lang == "ru":
-        subject = "Piratex.ai — напоминание о продлении подписки"
+        subject = "ВидеоРентген — напоминание о продлении подписки"
         title = "Напоминание о списании"
         body = [
             f"Через 3 дня ({charge_date}) произойдёт автоматическое продление вашей подписки <b>{tier_name}</b> на сумму <b>{amount}</b>.",
@@ -324,7 +324,7 @@ async def send_renewal_reminder_email(
         ]
         button = "Отменить подписку"
     else:
-        subject = f"Piratex.ai — subscription renewal reminder"
+        subject = f"VideoRentgen — subscription renewal reminder"
         title = "Upcoming charge reminder"
         body = [
             f"In 3 days ({charge_date}), your <b>{tier_name}</b> subscription will auto-renew for <b>{amount}</b>.",
@@ -350,7 +350,7 @@ async def send_renewal_confirmed_email(
     amount = html.escape(amount)
     active_until = html.escape(active_until)
     if lang == "ru":
-        subject = "Piratex.ai — подписка продлена"
+        subject = "ВидеоРентген — подписка продлена"
         title = "Подписка продлена"
         body = [
             f"Подписка <b>{tier_name}</b> успешно продлена.",
@@ -359,7 +359,7 @@ async def send_renewal_confirmed_email(
         ]
         button = "Управление подпиской"
     else:
-        subject = f"Piratex.ai — subscription renewed"
+        subject = f"VideoRentgen — subscription renewed"
         title = "Subscription renewed"
         body = [
             f"Your <b>{tier_name}</b> subscription has been renewed.",
@@ -386,7 +386,7 @@ async def send_dunning_email(
     tier_name_esc = html.escape(tier_name)
 
     if day == 1:
-        subject = "Piratex.ai — напоминание об оплате"
+        subject = "ВидеоРентген — напоминание об оплате"
         title = "Оплата не прошла"
         body = [
             f"Напоминаем: не удалось списать оплату за подписку <b>{tier_name_esc}</b>.",
@@ -394,7 +394,7 @@ async def send_dunning_email(
         ]
         button = "Обновить способ оплаты"
     else:
-        subject = "Piratex.ai — последний шанс сохранить подписку"
+        subject = "ВидеоРентген — последний шанс сохранить подписку"
         title = "Подписка будет отменена завтра"
         body = [
             f"Завтра ваша подписка <b>{tier_name_esc}</b> будет отменена из-за проблем с оплатой.",

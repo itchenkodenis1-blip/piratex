@@ -83,7 +83,7 @@ class CloudPaymentsProvider(PaymentProvider):
         # Amount must match what CP actually charges (may be discounted).
         # CP will use recurrent.amount for subsequent charges.
         first_payment_amount = amount_minor / 100  # actual charge amount (with promo)
-        receipt_label = description[:128] if description else f"Piratex.ai {tier} ({interval})"
+        receipt_label = description[:128] if description else f"ВидеоРентген {tier} ({interval})"
         cp_receipt = {
             "Items": [
                 {

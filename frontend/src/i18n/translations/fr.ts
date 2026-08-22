@@ -252,7 +252,7 @@ export const fr: Translations = {
   shared_page_not_found: "Résultat non trouvé ou en cours de traitement",
   shared_page_loading: "Chargement...",
   shared_page_cta: "Créez des adaptations de reels viraux en quelques minutes",
-  shared_page_try_piratex: "Essayer Piratex.ai",
+  shared_page_try_piratex: "Essayer VideoRentgen",
   shared_page_original_reel: "Reel original",
   shared_page_keyframes: "Images clés",
   shared_page_open_reference: "Ouvrir la référence",

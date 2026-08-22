@@ -45,7 +45,7 @@ MIN_VIEWS_THRESHOLD = 1000
 COLD_CHECK_LIMIT = 8
 
 # Author tracking limits per tier
-AUTHOR_LIMITS = {"ANONYMOUS": 0, "REGISTERED": 0, "FREE": 0, "START": 10, "PRO": 50, "UNLIMITED": 100}
+AUTHOR_LIMITS = {"ANONYMOUS": 100, "REGISTERED": 100, "FREE": 100, "START": 10, "PRO": 50, "UNLIMITED": 100}
 
 # Pub/Sub channel for admin trend-watching dashboard
 _MONITORING_CHANNEL = "admin:trend-watching"

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Piratex.ai — environment self-check.
+ВидеоРентген (VideoRentgen) — environment self-check.
 
 Shows what's configured and what each integration still needs. Use it after
 editing your .env (or after setting variables on Railway) to confirm you're
@@ -66,7 +66,7 @@ def main() -> int:
 
     env = load_env(path)
     src = path if path else "(no .env file — reading process environment only)"
-    print(BOLD("\nPiratex.ai — environment check"))
+    print(BOLD("\nВидеоРентген (VideoRentgen) — environment check"))
     print(DIM(f"source: {src}\n"))
 
     problems: list[str] = []

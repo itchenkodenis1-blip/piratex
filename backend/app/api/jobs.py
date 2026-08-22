@@ -597,6 +597,25 @@ async def get_frame_image(
     pattern = f"frame_{frame_index:04d}_*.jpg"
     matches = list(frames_dir.glob(pattern))
     if not matches:
+        # Cached replay jobs store frames under the original job_id
+        from app.models.library import LibraryReel
+
+        try:
+            result = await db.execute(
+                select(Job.library_reel_id).where(Job.id == job_id)
+            )
+            library_reel_id = result.scalar_one_or_none()
+            if library_reel_id:
+                lr_result = await db.execute(
+                    select(LibraryReel.job_id).where(LibraryReel.id == library_reel_id)
+                )
+                original_job_id = lr_result.scalar_one_or_none()
+                if original_job_id and original_job_id != job_id:
+                    orig_dir = get_frames_dir(original_job_id)
+                    matches = list(orig_dir.glob(pattern))
+        except Exception:
+            pass
+    if not matches:
         raise HTTPException(status_code=404, detail="Frame not found")
     return FileResponse(matches[0], media_type="image/jpeg")
 

@@ -1,4 +1,4 @@
-# Piratex.ai — Pricing & Limits
+# ВидеоРентген (VideoRentgen) — Pricing & Limits
 
 ## Тарифы
 

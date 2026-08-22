@@ -90,7 +90,7 @@ function playNotificationSound() {
 
 function showBrowserNotification(count: number) {
   if (Notification.permission !== "granted") return;
-  const n = new Notification("Piratex — Поддержка", {
+  const n = new Notification("ВидеоРентген — Поддержка", {
     body: `${count} новых сообщений`,
     icon: "/favicon.ico",
     tag: "piratex-support",
@@ -141,7 +141,7 @@ export function AdminPage() {
   // Update page title with unread count
   useEffect(() => {
     const totalUnread = supportUnread + ratingsUnread;
-    document.title = totalUnread > 0 ? `(${totalUnread}) Admin — Piratex` : "Admin — Piratex";
+    document.title = totalUnread > 0 ? `(${totalUnread}) Admin — ВидеоРентген` : "Admin — ВидеоРентген";
   }, [supportUnread, ratingsUnread]);
 
   const nav = [

@@ -277,7 +277,7 @@ async def send_reengagement_messages(db: AsyncSession) -> int:
         elif 14 <= days_inactive <= 15:
             tier = "d14"
             text = (
-                "Давно вас не видели в Piratex.ai!\n\n"
+                "Давно вас не видели в ВидеоРентгене!\n\n"
                 "Пока вас не было, мы добавили новые возможности. "
                 "Зайдите и проанализируйте рилс — это займёт 2 минуты:\n"
                 f"{settings.app_url}"
@@ -285,7 +285,7 @@ async def send_reengagement_messages(db: AsyncSession) -> int:
         elif 30 <= days_inactive <= 31:
             tier = "d30"
             text = (
-                "Добрый день! Это команда Piratex.ai.\n\n"
+                "Добрый день! Это команда ВидеоРентген.\n\n"
                 "Заметили, что вы давно не заходили. "
                 "Если у вас есть вопросы или пожелания — напишите нам, "
                 "мы всегда на связи.\n\n"

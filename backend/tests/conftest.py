@@ -1,5 +1,5 @@
 """
-Shared async fixtures for Piratex.ai backend tests.
+Shared async fixtures for ВидеоРентген backend tests.
 
 Usage:
     async def test_something(client, db_session, make_user):

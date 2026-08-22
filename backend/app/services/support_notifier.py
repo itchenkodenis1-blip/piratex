@@ -75,11 +75,11 @@ async def notify_user_support_reply(message_id: str, user_id: str) -> None:
 async def _send_telegram(chat_id: str, preview: str, chat_url: str, lang: str) -> bool:
     """Send Telegram notification to user."""
     TITLES = {
-        "ru": "💬 Вам ответили из поддержки Piratex",
-        "en": "💬 You have a reply from Piratex support",
-        "fr": "💬 Réponse du support Piratex",
-        "pt": "💬 Resposta do suporte Piratex",
-        "de": "💬 Antwort vom Piratex Support",
+        "ru": "💬 Вам ответили из поддержки ВидеоРентген",
+        "en": "💬 You have a reply from VideoRentgen support",
+        "fr": "💬 Réponse du support VideoRentgen",
+        "pt": "💬 Resposta do suporte VideoRentgen",
+        "de": "💬 Antwort vom VideoRentgen Support",
     }
     BUTTONS = {
         "ru": "Открыть чат",

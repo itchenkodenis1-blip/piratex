@@ -20,7 +20,7 @@ async def send_sms_code(phone: str, code: str) -> bool:
                 params={
                     "api_id": settings.sms_provider_api_key,
                     "to": phone,
-                    "msg": f"Piratex.ai: ваш код {code}",
+                    "msg": f"ВидеоРентген: ваш код {code}",
                     "json": 1,
                 },
             )
