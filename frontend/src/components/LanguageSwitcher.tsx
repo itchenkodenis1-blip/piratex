@@ -13,8 +13,8 @@ export function LanguageSwitcher() {
   const availableLanguages = useMemo(() => {
     const base = isViralexDomain()
       ? SUPPORTED_LANGUAGES.filter((code) => code !== "ru")
-      : SUPPORTED_LANGUAGES;
-    // Текущий язык показываем только в кнопке — в списке он дублировал сам себя
+      : // Только рынки с рабочей оплатой и релевантной аудиторией (de/fr скрыты до спроса)
+        (["ru", "en", "pt"] as const);
     return base.filter((code) => code !== lang);
   }, [lang]);
 
